@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="加入新公司一月有余。作为一家初创公司，在我看来，其虽然技术能力不错，但前端的基础架构相对薄弱，开发模式也有可提升之处。经历过一个大的迭代之后，一直在思考效率提升的方案，与老大粗聊几次，也算有些收获。以此文记录，也作整理思路之用。 背景产品与开发模式公司目前的主要产品是一款 windows 端的渲染器，为实现更好的视觉效果，上层选择采用了前端技术来搭建界面。由于技术栈的隔离，开发天然的划分为两部分：">
+<meta property="og:type" content="article">
+<meta property="og:title" content="业界开发模式与效率提升的探索">
+<meta property="og:url" content="https://amoonkin.github.io/%E4%B8%9A%E7%95%8C%E5%BC%80%E5%8F%91%E6%A8%A1%E5%BC%8F%E4%B8%8E%E6%95%88%E7%8E%87%E6%8F%90%E5%8D%87%E7%9A%84%E6%8E%A2%E7%B4%A2/index.html">
+<meta property="og:site_name" content="aMoonkin">
+<meta property="og:description" content="加入新公司一月有余。作为一家初创公司，在我看来，其虽然技术能力不错，但前端的基础架构相对薄弱，开发模式也有可提升之处。经历过一个大的迭代之后，一直在思考效率提升的方案，与老大粗聊几次，也算有些收获。以此文记录，也作整理思路之用。 背景产品与开发模式公司目前的主要产品是一款 windows 端的渲染器，为实现更好的视觉效果，上层选择采用了前端技术来搭建界面。由于技术栈的隔离，开发天然的划分为两部分：">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-05-17T05:24:18.000Z">
+<meta property="article:modified_time" content="2021-05-03T11:21:40.057Z">
+<meta property="article:author" content="aMoonkin">
+<meta property="article:tag" content="javascript frontend developer">
+<meta name="twitter:card" content="summary">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/favicon.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>业界开发模式与效率提升的探索</title>
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+<meta name="generator" content="Hexo 4.2.1"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" "Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fas fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+         
+          <li><a href="/">首页</a></li>
+         
+          <li><a href="/about/">关于</a></li>
+         
+          <li><a href="/archives/">归档</a></li>
+         
+          <li><a href="/projects_url">项目</a></li>
+        
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="上一篇 " href="/%E4%B8%80%E4%B8%AA%E4%B8%BAwebsocket%E8%AE%BE%E8%AE%A1%E7%9A%84%E6%B5%8B%E8%AF%95%E5%B7%A5%E5%85%B7/"><i class="fas fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="下一篇 " href="/%E5%9F%BA%E4%BA%8E%E5%BE%AE%E5%89%8D%E7%AB%AF%E7%9A%84%E5%89%8D%E5%90%8E%E7%AB%AF%E7%BB%93%E5%90%88%E5%88%86%E5%B1%82%E8%AE%BE%E8%AE%A1-%E8%AE%BE%E8%AE%A1%E7%AF%87/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="返回顶部 " href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="分享文章 " href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">上一篇</span>
+      <span id="i-next" class="info" style="display:none;">下一篇</span>
+      <span id="i-top" class="info" style="display:none;">返回顶部</span>
+      <span id="i-share" class="info" style="display:none;">分享文章</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=https://amoonkin.github.io/%E4%B8%9A%E7%95%8C%E5%BC%80%E5%8F%91%E6%A8%A1%E5%BC%8F%E4%B8%8E%E6%95%88%E7%8E%87%E6%8F%90%E5%8D%87%E7%9A%84%E6%8E%A2%E7%B4%A2/" target="_blank" rel="noopener"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=https://amoonkin.github.io/%E4%B8%9A%E7%95%8C%E5%BC%80%E5%8F%91%E6%A8%A1%E5%BC%8F%E4%B8%8E%E6%95%88%E7%8E%87%E6%8F%90%E5%8D%87%E7%9A%84%E6%8E%A2%E7%B4%A2/&text=业界开发模式与效率提升的探索" target="_blank" rel="noopener"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=https://amoonkin.github.io/%E4%B8%9A%E7%95%8C%E5%BC%80%E5%8F%91%E6%A8%A1%E5%BC%8F%E4%B8%8E%E6%95%88%E7%8E%87%E6%8F%90%E5%8D%87%E7%9A%84%E6%8E%A2%E7%B4%A2/&title=业界开发模式与效率提升的探索" target="_blank" rel="noopener"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=https://amoonkin.github.io/%E4%B8%9A%E7%95%8C%E5%BC%80%E5%8F%91%E6%A8%A1%E5%BC%8F%E4%B8%8E%E6%95%88%E7%8E%87%E6%8F%90%E5%8D%87%E7%9A%84%E6%8E%A2%E7%B4%A2/&is_video=false&description=业界开发模式与效率提升的探索" target="_blank" rel="noopener"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=业界开发模式与效率提升的探索&body=Check out this article: https://amoonkin.github.io/%E4%B8%9A%E7%95%8C%E5%BC%80%E5%8F%91%E6%A8%A1%E5%BC%8F%E4%B8%8E%E6%95%88%E7%8E%87%E6%8F%90%E5%8D%87%E7%9A%84%E6%8E%A2%E7%B4%A2/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=https://amoonkin.github.io/%E4%B8%9A%E7%95%8C%E5%BC%80%E5%8F%91%E6%A8%A1%E5%BC%8F%E4%B8%8E%E6%95%88%E7%8E%87%E6%8F%90%E5%8D%87%E7%9A%84%E6%8E%A2%E7%B4%A2/&title=业界开发模式与效率提升的探索" target="_blank" rel="noopener"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=https://amoonkin.github.io/%E4%B8%9A%E7%95%8C%E5%BC%80%E5%8F%91%E6%A8%A1%E5%BC%8F%E4%B8%8E%E6%95%88%E7%8E%87%E6%8F%90%E5%8D%87%E7%9A%84%E6%8E%A2%E7%B4%A2/&title=业界开发模式与效率提升的探索" target="_blank" rel="noopener"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=https://amoonkin.github.io/%E4%B8%9A%E7%95%8C%E5%BC%80%E5%8F%91%E6%A8%A1%E5%BC%8F%E4%B8%8E%E6%95%88%E7%8E%87%E6%8F%90%E5%8D%87%E7%9A%84%E6%8E%A2%E7%B4%A2/&title=业界开发模式与效率提升的探索" target="_blank" rel="noopener"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=https://amoonkin.github.io/%E4%B8%9A%E7%95%8C%E5%BC%80%E5%8F%91%E6%A8%A1%E5%BC%8F%E4%B8%8E%E6%95%88%E7%8E%87%E6%8F%90%E5%8D%87%E7%9A%84%E6%8E%A2%E7%B4%A2/&title=业界开发模式与效率提升的探索" target="_blank" rel="noopener"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=https://amoonkin.github.io/%E4%B8%9A%E7%95%8C%E5%BC%80%E5%8F%91%E6%A8%A1%E5%BC%8F%E4%B8%8E%E6%95%88%E7%8E%87%E6%8F%90%E5%8D%87%E7%9A%84%E6%8E%A2%E7%B4%A2/&name=业界开发模式与效率提升的探索&description=" target="_blank" rel="noopener"><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://news.ycombinator.com/submitlink?u=https://amoonkin.github.io/%E4%B8%9A%E7%95%8C%E5%BC%80%E5%8F%91%E6%A8%A1%E5%BC%8F%E4%B8%8E%E6%95%88%E7%8E%87%E6%8F%90%E5%8D%87%E7%9A%84%E6%8E%A2%E7%B4%A2/&t=业界开发模式与效率提升的探索" target="_blank" rel="noopener"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#背景"><span class="toc-number">1.</span> <span class="toc-text">背景</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#产品与开发模式"><span class="toc-number">1.1.</span> <span class="toc-text">产品与开发模式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#问题"><span class="toc-number">1.2.</span> <span class="toc-text">问题</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#一些探索"><span class="toc-number">2.</span> <span class="toc-text">一些探索</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#前后端分离"><span class="toc-number">2.1.</span> <span class="toc-text">前后端分离</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#前后端真的分离了？"><span class="toc-number">2.1.1.</span> <span class="toc-text">前后端真的分离了？</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#业界实践"><span class="toc-number">2.2.</span> <span class="toc-text">业界实践</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#前端主导"><span class="toc-number">2.2.1.</span> <span class="toc-text">前端主导</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#后台主导"><span class="toc-number">2.2.2.</span> <span class="toc-text">后台主导</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#全功能团队"><span class="toc-number">2.2.3.</span> <span class="toc-text">全功能团队</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#一些设想"><span class="toc-number">3.</span> <span class="toc-text">一些设想</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#技术与业务"><span class="toc-number">3.1.</span> <span class="toc-text">技术与业务</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#理想"><span class="toc-number">3.2.</span> <span class="toc-text">理想</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#现实"><span class="toc-number">3.3.</span> <span class="toc-text">现实</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#客户端对前端技术不感兴趣"><span class="toc-number">3.3.1.</span> <span class="toc-text">客户端对前端技术不感兴趣</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#无代码编写业务逻辑"><span class="toc-number">3.3.2.</span> <span class="toc-text">无代码编写业务逻辑</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#回归初心-——-为什么要用前端技术"><span class="toc-number">3.3.3.</span> <span class="toc-text">回归初心 —— 为什么要用前端技术?</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Q-amp-A"><span class="toc-number">4.</span> <span class="toc-text">Q&amp;A</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#参考文档"><span class="toc-number">5.</span> <span class="toc-text">参考文档</span></a></li></ol>
+    </div>
+  </span>
+</div>
+
+    
+    <div class="content index py4">
+        
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        业界开发模式与效率提升的探索
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span itemprop="name">aMoonkin</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2020-05-17T05:24:18.000Z" itemprop="datePublished">2020-05-17</time>
+        
+      
+    </div>
+
+
+      
+
+      
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <p>加入新公司一月有余。作为一家初创公司，在我看来，其虽然技术能力不错，但前端的基础架构相对薄弱，开发模式也有可提升之处。经历过一个大的迭代之后，一直在思考效率提升的方案，与老大粗聊几次，也算有些收获。以此文记录，也作整理思路之用。</p>
+<h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><h3 id="产品与开发模式"><a href="#产品与开发模式" class="headerlink" title="产品与开发模式"></a>产品与开发模式</h3><p>公司目前的主要产品是一款 windows 端的渲染器，为实现更好的视觉效果，上层选择采用了前端技术来搭建界面。由于技术栈的隔离，开发天然的划分为两部分：客户端与前端开发。前端与客户端通过<code>Qt WebChannel</code>来连接。开发模式类似与前后端分离。后续即以前后端分离代表这种开发模式。前后端代表前端与客户端。</p>
+<h3 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h3><p>公司在开发上的问题主要集中在下面几点：</p>
+<ol>
+<li>前端流动性较高：为保证代码质量，倾向技术能力较强的中短期前端开发（如有大厂能力的实习生），而不倾向技术能力一般的稳定前端开发；</li>
+<li>业务的学习成本较高：在前后端均有业务逻辑的情况下，前端无法将客户端发送的信息视为黑盒直接使用，造成了前端需要逐步学习业务知识。</li>
+<li>前后端开发分离：前后端开发分离的问题大家应该都有耳闻，前后端联调是一个比较困难的过程，尤其是在公司：<ul>
+<li>缺少 Test Case</li>
+<li>客户端编译出包时间较长</li>
+<li>创业对于出版本时间的要求较高<br>—— 造成造成即使是一个小 bug，如果前后一方没做到位，也需要大量的调试时间。</li>
+</ul>
+</li>
+</ol>
+<p>可以看出，1, 2 两点是冲突的也是必要的，需要投入更大的人员成本才有机会将其解决。很遗憾，现阶段并没有合适的人选。而第三点，就是本文讨论的重点，如何对其优化以带来效率上的提升。</p>
+<h2 id="一些探索"><a href="#一些探索" class="headerlink" title="一些探索"></a>一些探索</h2><p>成熟的研发体系总会对这样的痛点做适合他们的一些<strong>探索</strong>，前后端是一个长久以来一直存在的问题，那么首先，为什么要有前后端分离？</p>
+<h3 id="前后端分离"><a href="#前后端分离" class="headerlink" title="前后端分离"></a>前后端分离</h3><p>我们知道原始的前端和 view 层是一致的，切图、写页面、写交互、把写好的页面交给后台，后台将其作为模板提供成可插入数据的页面。这样的开发模式为什么要慢慢转变成前后端分离开发？有人将其解释为耦合，下面我谈谈读过<a href="#参考文档">一些资料</a>后我的理解：</p>
+<p>第一点，串行开发：后台需要等待前端提供模板之后才能进行开发，功能如需进行调整，整个过程是漫长的。</p>
+<p>第二点，先提一下<strong>康威定律</strong>：设计系统的组织，其设计受制于组织间的通信结构</p>
+<blockquote>
+<p>Organizations which design systems are constrained to produce designs which are copies of the communication structures of these organizations.<br>按照<a href="http://repractise.phodal.com/#%E5%89%8D%E5%90%8E%E7%AB%AF%E5%88%86%E7%A6%BB" target="_blank" rel="noopener">phodal</a>的话说，就是部门大了需要拆分。</p>
+</blockquote>
+<p>那么如何拆？通过技术栈拆成前后端看起来是一种方式。</p>
+<p>第三点，多端客户端的产生：随着手机端的盛行，对于一个功能，已经不止是为电脑服务的 web 前端要用到，手机 web 端，手机 app 甚至一些特殊设备都要用到。有一套后台 REST 接口便可以支持多端运行，很明显是一件提升效率的事情。</p>
+<h4 id="前后端真的分离了？"><a href="#前后端真的分离了？" class="headerlink" title="前后端真的分离了？"></a>前后端真的分离了？</h4><p>前后端是否分离取决于前后端的知识上下文是否分离，也就是前后是否彼此互为黑盒，只要定义好接口，之间的沟通就可以尽可能的少很明显，只是拆成前后端，但是没有保证前后端分离，也就没有做到前后端分离，反而会增加沟通成本，</p>
+<p>为此，业界基于一致的“接口”，有很多优秀的实践：</p>
+<ol>
+<li>契约测试（Pact 等）：保证变化的 api 的正确性。</li>
+<li>数据结构生成器（swagger 等）：保证前后端接口元信息的一致性。</li>
+<li>一些分锅工具（log 分析等）：迅速准确定位定界。</li>
+<li>ci/cd：前后端分别独立构建发布，保证前后端版本的分离。</li>
+</ol>
+<h3 id="业界实践"><a href="#业界实践" class="headerlink" title="业界实践"></a>业界实践</h3><p>业界根据业务模式，可以分成三种：</p>
+<h4 id="前端主导"><a href="#前端主导" class="headerlink" title="前端主导"></a>前端主导</h4><ol>
+<li>BFF(Backends For Frontends)</li>
+<li>serverless</li>
+</ol>
+<h4 id="后台主导"><a href="#后台主导" class="headerlink" title="后台主导"></a>后台主导</h4><p>前端模式化</p>
+<ul>
+<li>前端可视化编辑器</li>
+<li>前端组件化</li>
+</ul>
+<h4 id="全功能团队"><a href="#全功能团队" class="headerlink" title="全功能团队"></a>全功能团队</h4><p>端到端的领域模型 -&gt; 端到端开发</p>
+<h2 id="一些设想"><a href="#一些设想" class="headerlink" title="一些设想"></a>一些设想</h2><p>成熟的研发体系总会对这样的痛点做<strong>适合</strong>他们的一些探索，</p>
+<h3 id="技术与业务"><a href="#技术与业务" class="headerlink" title="技术与业务"></a>技术与业务</h3><h3 id="理想"><a href="#理想" class="headerlink" title="理想"></a>理想</h3><p>我理想中的开发模式应该是这样的：</p>
+<ol>
+<li>明确的领域模型</li>
+<li>前端负责视图组件开发</li>
+<li>后台负责逻辑开发</li>
+</ol>
+<h3 id="现实"><a href="#现实" class="headerlink" title="现实"></a>现实</h3><h4 id="客户端对前端技术不感兴趣"><a href="#客户端对前端技术不感兴趣" class="headerlink" title="客户端对前端技术不感兴趣"></a>客户端对前端技术不感兴趣</h4><h4 id="无代码编写业务逻辑"><a href="#无代码编写业务逻辑" class="headerlink" title="无代码编写业务逻辑"></a>无代码编写业务逻辑</h4><h4 id="回归初心-——-为什么要用前端技术"><a href="#回归初心-——-为什么要用前端技术" class="headerlink" title="回归初心 —— 为什么要用前端技术?"></a>回归初心 —— 为什么要用前端技术?</h4><h2 id="Q-amp-A"><a href="#Q-amp-A" class="headerlink" title="Q&amp;A"></a>Q&amp;A</h2><h2 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h2><ul>
+<li><a href="https://insights.thoughtworks.cn/about-contract-test/" target="_blank" rel="noopener">契约测试</a></li>
+<li><a href="https://github.com/pact-foundation/pact-specification/tree/version-2" target="_blank" rel="noopener">pact</a></li>
+<li><a href="https://swagger.io/" target="_blank" rel="noopener">swagger</a></li>
+<li><a href="https://study.163.com/course/courseLearn.htm?courseId=1208990810#/learn/video?lessonId=1278484219&courseId=1208990810" target="_blank" rel="noopener">世界是平的吗？by 徐飞</a></li>
+</ul>
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">首页</a></li>
+         
+          <li><a href="/about/">关于</a></li>
+         
+          <li><a href="/archives/">归档</a></li>
+         
+          <li><a href="/projects_url">项目</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#背景"><span class="toc-number">1.</span> <span class="toc-text">背景</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#产品与开发模式"><span class="toc-number">1.1.</span> <span class="toc-text">产品与开发模式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#问题"><span class="toc-number">1.2.</span> <span class="toc-text">问题</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#一些探索"><span class="toc-number">2.</span> <span class="toc-text">一些探索</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#前后端分离"><span class="toc-number">2.1.</span> <span class="toc-text">前后端分离</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#前后端真的分离了？"><span class="toc-number">2.1.1.</span> <span class="toc-text">前后端真的分离了？</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#业界实践"><span class="toc-number">2.2.</span> <span class="toc-text">业界实践</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#前端主导"><span class="toc-number">2.2.1.</span> <span class="toc-text">前端主导</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#后台主导"><span class="toc-number">2.2.2.</span> <span class="toc-text">后台主导</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#全功能团队"><span class="toc-number">2.2.3.</span> <span class="toc-text">全功能团队</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#一些设想"><span class="toc-number">3.</span> <span class="toc-text">一些设想</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#技术与业务"><span class="toc-number">3.1.</span> <span class="toc-text">技术与业务</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#理想"><span class="toc-number">3.2.</span> <span class="toc-text">理想</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#现实"><span class="toc-number">3.3.</span> <span class="toc-text">现实</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#客户端对前端技术不感兴趣"><span class="toc-number">3.3.1.</span> <span class="toc-text">客户端对前端技术不感兴趣</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#无代码编写业务逻辑"><span class="toc-number">3.3.2.</span> <span class="toc-text">无代码编写业务逻辑</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#回归初心-——-为什么要用前端技术"><span class="toc-number">3.3.3.</span> <span class="toc-text">回归初心 —— 为什么要用前端技术?</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Q-amp-A"><span class="toc-number">4.</span> <span class="toc-text">Q&amp;A</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#参考文档"><span class="toc-number">5.</span> <span class="toc-text">参考文档</span></a></li></ol>
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=https://amoonkin.github.io/%E4%B8%9A%E7%95%8C%E5%BC%80%E5%8F%91%E6%A8%A1%E5%BC%8F%E4%B8%8E%E6%95%88%E7%8E%87%E6%8F%90%E5%8D%87%E7%9A%84%E6%8E%A2%E7%B4%A2/" target="_blank" rel="noopener"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=https://amoonkin.github.io/%E4%B8%9A%E7%95%8C%E5%BC%80%E5%8F%91%E6%A8%A1%E5%BC%8F%E4%B8%8E%E6%95%88%E7%8E%87%E6%8F%90%E5%8D%87%E7%9A%84%E6%8E%A2%E7%B4%A2/&text=业界开发模式与效率提升的探索" target="_blank" rel="noopener"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=https://amoonkin.github.io/%E4%B8%9A%E7%95%8C%E5%BC%80%E5%8F%91%E6%A8%A1%E5%BC%8F%E4%B8%8E%E6%95%88%E7%8E%87%E6%8F%90%E5%8D%87%E7%9A%84%E6%8E%A2%E7%B4%A2/&title=业界开发模式与效率提升的探索" target="_blank" rel="noopener"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=https://amoonkin.github.io/%E4%B8%9A%E7%95%8C%E5%BC%80%E5%8F%91%E6%A8%A1%E5%BC%8F%E4%B8%8E%E6%95%88%E7%8E%87%E6%8F%90%E5%8D%87%E7%9A%84%E6%8E%A2%E7%B4%A2/&is_video=false&description=业界开发模式与效率提升的探索" target="_blank" rel="noopener"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=业界开发模式与效率提升的探索&body=Check out this article: https://amoonkin.github.io/%E4%B8%9A%E7%95%8C%E5%BC%80%E5%8F%91%E6%A8%A1%E5%BC%8F%E4%B8%8E%E6%95%88%E7%8E%87%E6%8F%90%E5%8D%87%E7%9A%84%E6%8E%A2%E7%B4%A2/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=https://amoonkin.github.io/%E4%B8%9A%E7%95%8C%E5%BC%80%E5%8F%91%E6%A8%A1%E5%BC%8F%E4%B8%8E%E6%95%88%E7%8E%87%E6%8F%90%E5%8D%87%E7%9A%84%E6%8E%A2%E7%B4%A2/&title=业界开发模式与效率提升的探索" target="_blank" rel="noopener"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=https://amoonkin.github.io/%E4%B8%9A%E7%95%8C%E5%BC%80%E5%8F%91%E6%A8%A1%E5%BC%8F%E4%B8%8E%E6%95%88%E7%8E%87%E6%8F%90%E5%8D%87%E7%9A%84%E6%8E%A2%E7%B4%A2/&title=业界开发模式与效率提升的探索" target="_blank" rel="noopener"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=https://amoonkin.github.io/%E4%B8%9A%E7%95%8C%E5%BC%80%E5%8F%91%E6%A8%A1%E5%BC%8F%E4%B8%8E%E6%95%88%E7%8E%87%E6%8F%90%E5%8D%87%E7%9A%84%E6%8E%A2%E7%B4%A2/&title=业界开发模式与效率提升的探索" target="_blank" rel="noopener"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=https://amoonkin.github.io/%E4%B8%9A%E7%95%8C%E5%BC%80%E5%8F%91%E6%A8%A1%E5%BC%8F%E4%B8%8E%E6%95%88%E7%8E%87%E6%8F%90%E5%8D%87%E7%9A%84%E6%8E%A2%E7%B4%A2/&title=业界开发模式与效率提升的探索" target="_blank" rel="noopener"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=https://amoonkin.github.io/%E4%B8%9A%E7%95%8C%E5%BC%80%E5%8F%91%E6%A8%A1%E5%BC%8F%E4%B8%8E%E6%95%88%E7%8E%87%E6%8F%90%E5%8D%87%E7%9A%84%E6%8E%A2%E7%B4%A2/&name=业界开发模式与效率提升的探索&description=" target="_blank" rel="noopener"><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://news.ycombinator.com/submitlink?u=https://amoonkin.github.io/%E4%B8%9A%E7%95%8C%E5%BC%80%E5%8F%91%E6%A8%A1%E5%BC%8F%E4%B8%8E%E6%95%88%E7%8E%87%E6%8F%90%E5%8D%87%E7%9A%84%E6%8E%A2%E7%B4%A2/&t=业界开发模式与效率提升的探索" target="_blank" rel="noopener"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> 菜单</a>
+        <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> 目录</a>
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> 分享</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> 返回顶部</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2016-2021
+    aMoonkin
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+         
+          <li><a href="/">首页</a></li>
+         
+          <li><a href="/about/">关于</a></li>
+         
+          <li><a href="/archives/">归档</a></li>
+         
+          <li><a href="/projects_url">项目</a></li>
+        
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+ 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script> 
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script> 
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"复制到粘贴板!\">";
+    btn += '<i class="far fa-clone"></i>';
+    btn += '</span>'; 
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "复制成功!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Google Analytics -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Umami Analytics -->
+
+<!-- Disqus Comments -->
+
+
+</body>
+</html>

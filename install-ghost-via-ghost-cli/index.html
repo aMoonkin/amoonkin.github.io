@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="暑假伊始，想把放下许久的博客再搭起来，在经过一些挑选后，还是选择了 ghost。在ghost 官网发现了有Ghost-CLI可以用，心念一动，于是，走上了不归路。这里做一些总结，以警后事。##Ghost-CLI 安装 在安装之前，你可能需要安装一些必要的依赖，在Debian&#x2F;Ubuntu下： sudo apt install build-essential  在CentOS下： yum group">
+<meta property="og:type" content="article">
+<meta property="og:title" content="记一次Ghost-CLI的踩坑经历">
+<meta property="og:url" content="https://amoonkin.github.io/install-ghost-via-ghost-cli/index.html">
+<meta property="og:site_name" content="aMoonkin">
+<meta property="og:description" content="暑假伊始，想把放下许久的博客再搭起来，在经过一些挑选后，还是选择了 ghost。在ghost 官网发现了有Ghost-CLI可以用，心念一动，于是，走上了不归路。这里做一些总结，以警后事。##Ghost-CLI 安装 在安装之前，你可能需要安装一些必要的依赖，在Debian&#x2F;Ubuntu下： sudo apt install build-essential  在CentOS下： yum group">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2017-07-12T07:58:07.000Z">
+<meta property="article:modified_time" content="2017-08-06T21:15:47.000Z">
+<meta property="article:author" content="aMoonkin">
+<meta property="article:tag" content="javascript frontend developer">
+<meta name="twitter:card" content="summary">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/favicon.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>记一次Ghost-CLI的踩坑经历</title>
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+<meta name="generator" content="Hexo 4.2.1"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" "Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fas fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+         
+          <li><a href="/">首页</a></li>
+         
+          <li><a href="/about/">关于</a></li>
+         
+          <li><a href="/archives/">归档</a></li>
+         
+          <li><a href="/projects_url">项目</a></li>
+        
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="上一篇 " href="/reactive-programming-youve-been-missing/"><i class="fas fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="下一篇 " href="/memoize-to-cache-javascript-function-results/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="返回顶部 " href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="分享文章 " href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">上一篇</span>
+      <span id="i-next" class="info" style="display:none;">下一篇</span>
+      <span id="i-top" class="info" style="display:none;">返回顶部</span>
+      <span id="i-share" class="info" style="display:none;">分享文章</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=https://amoonkin.github.io/install-ghost-via-ghost-cli/" target="_blank" rel="noopener"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=https://amoonkin.github.io/install-ghost-via-ghost-cli/&text=记一次Ghost-CLI的踩坑经历" target="_blank" rel="noopener"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=https://amoonkin.github.io/install-ghost-via-ghost-cli/&title=记一次Ghost-CLI的踩坑经历" target="_blank" rel="noopener"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=https://amoonkin.github.io/install-ghost-via-ghost-cli/&is_video=false&description=记一次Ghost-CLI的踩坑经历" target="_blank" rel="noopener"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=记一次Ghost-CLI的踩坑经历&body=Check out this article: https://amoonkin.github.io/install-ghost-via-ghost-cli/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=https://amoonkin.github.io/install-ghost-via-ghost-cli/&title=记一次Ghost-CLI的踩坑经历" target="_blank" rel="noopener"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=https://amoonkin.github.io/install-ghost-via-ghost-cli/&title=记一次Ghost-CLI的踩坑经历" target="_blank" rel="noopener"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=https://amoonkin.github.io/install-ghost-via-ghost-cli/&title=记一次Ghost-CLI的踩坑经历" target="_blank" rel="noopener"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=https://amoonkin.github.io/install-ghost-via-ghost-cli/&title=记一次Ghost-CLI的踩坑经历" target="_blank" rel="noopener"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=https://amoonkin.github.io/install-ghost-via-ghost-cli/&name=记一次Ghost-CLI的踩坑经历&description=" target="_blank" rel="noopener"><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://news.ycombinator.com/submitlink?u=https://amoonkin.github.io/install-ghost-via-ghost-cli/&t=记一次Ghost-CLI的踩坑经历" target="_blank" rel="noopener"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    <div id="toc">
+      
+    </div>
+  </span>
+</div>
+
+    
+    <div class="content index py4">
+        
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        记一次Ghost-CLI的踩坑经历
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span itemprop="name">aMoonkin</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2017-07-12T07:58:07.000Z" itemprop="datePublished">2017-07-12</time>
+        
+      
+    </div>
+
+
+      
+
+      
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <p>暑假伊始，想把放下许久的博客再搭起来，在经过一些挑选后，还是选择了 ghost。在<a href="https://ghost.org/developers/" target="_blank" rel="noopener">ghost 官网</a>发现了有<strong>Ghost-CLI</strong>可以用，心念一动，于是，走上了不归路。这里做一些总结，以警后事。<br>##Ghost-CLI 安装</p>
+<p>在安装之前，你可能需要安装一些必要的依赖，在<code>Debian/Ubuntu</code>下：</p>
+<pre><code>sudo apt install build-essential</code></pre>
+
+<p>在<code>CentOS</code>下：</p>
+<pre><code>yum groupinstall "Development Tools" </code></pre>
+
+<p>###安装 nodejs<br>这个可能是作为一个前端，安装中最驾轻就熟的了。我使用了<a href="https://github.com/creationix/nvm/" target="_blank" rel="noopener">nvm</a>作为 node 版本管理：</p>
+<pre><code>curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.2/install.sh | bash</code></pre>
+
+<p>之后<pre><code>nvm install --lts</code></pre>安装最新的长期支持版本（我使用的是<code>v6.11.1</code>）</p>
+<p>根据<a href="https://github.com/TryGhost/Ghost-CLI" target="_blank" rel="noopener">TryGhost/Ghost-CLI</a>安装：</p>
+<pre><code>npm install -g ghost-cli@latest</code></pre>
+
+<p>我安装时的最新版本为<code>1.0.0-rc.2</code>。 ##通过 CLI 安装 GHOST<br>按照<a href="https://docs.ghost.org/docs/installing-ghost-via-the-cli" target="_blank" rel="noopener">官网文档</a>，一步步进行如下： ###安装 nginx：<br>我使用的是 CentOS7，在尝试过直接使用 yum 无果之后，发现要添加 nginx yum 源：</p>
+<pre><code>sudo rpm -Uvh http://nginx.org/packages/centos/7/noarch/RPMS/nginx-release-centos-7-0.el7.ngx.noarch.rpm
+</code></pre>
+
+<p>然后 yum 安装 nginx：</p>
+<pre><code>sudo yum install -y nginx
+</code></pre>
+
+<p>###安装 MySQL：<br>与上文类似，在 yum 安装<code>mysql-server</code>时找不到可用包，采用如下方式：<pre><code># wget <a href="http://repo.mysql.com/mysql-community-release-el7-5.noarch.rpm" target="_blank" rel="noopener">http://repo.mysql.com/mysql-community-release-el7-5.noarch.rpm</a> </code></pre></p>
+<pre><code># rpm -ivh mysql-community-release-el7-5.noarch.rpm </code></pre>
+<pre><code># yum install mysql-server</code></pre>
+
+<p>即可完成安装，在安装完成时候，也并不像 Ubuntu 一样可以直接设置用户，而是需要：</p>
+<p>为 root 用户设置密码<pre><code># mysql -u root<br>mysql> set password for 'root'@'localhost' =password('password');</code></pre><br>完成设置。 ###安装 ghost：<br>如果顺利的话，是这样的：</p>
+<pre><code># ghost install</code></pre>
+<pre><code>Enter your blog Url:
+Enter your MySQL hostname:
+Enter your MySQL username:
+……</code></pre>
+
+<p>你只需要按照提示，一步步填写进去即可，但是事情的发展常常不是这么顺利：<br>官网有句话是这么写的,</p>
+<blockquote>
+<p>Ubuntu 16.04 is the only officially supported OS. Other operating systems may work, but we are unable to assist with debugging or optimising for them.</p>
+</blockquote>
+<p>也就是说只是官方支持 Ubuntu 16.04，我用 CentOS7 执行时提示我并不是 Ubuntu16，询问是否继续，当然~<br>安装到一半，提示<code>Error occurred running command: 'yarn install --no-emoji --no-progress'</code>，在<a href="https://docs.ghost.org/docs/troubleshooting-guide" target="_blank" rel="noopener">troubleshooting</a>页面找到了解答：可能是你的内存不够用，建议你删除整个文件夹，重新安装。<br>不得不说，<code>ghost-cli</code>有一点非常不好，就是要求安装目录必须为空，<strong>不支持</strong>覆盖安装，于是每次的库都要重新下载。<br>在删除安装了 7，8 次之后，终于安装成功了！<br>在填写完我的域名，数据库信息后，弹出这样一个问题<code>Do you wish to set up nginx?</code>，然后提示找不到 nginx，自动跳过了，喵？（后来在 Ubuntu16.04 上测试并没有出现这个情况），解决办法当然是自己配置 nginx 反向代理啦，在<code>/etc/nginx/conf.d</code>文件夹内新建一个<code>ghost.conf</code>，写入</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">server&#123;</span><br><span class="line">        listen 80 default_server;</span><br><span class="line">        server_name blog.battles.xyz;</span><br><span class="line"></span><br><span class="line">        location &#x2F; &#123;</span><br><span class="line">                proxy_set_header X-Real-IP $remote_addr;</span><br><span class="line">                proxy_set_header Host      $http_host;</span><br><span class="line">                proxy_pass    http:&#x2F;&#x2F;127.0.0.1:2368;</span><br><span class="line">        &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>当然<code>server_name</code>要换成你自己的啦。<br>所有问题结束之后，通过<code>ghost start</code>命令，打开服务，系统用绿绿的字提示 ghost 启动，请访问你的域名 balabala。这里我又遇到了问题：浏览器打开提示 502，一定是有服务没运行起来：<br>检查 nginx service 并没有发现问题，用<code>ps -ef|grep node</code>发现没有 node 进程在运行？？？<br>用<code>ghost ls</code>命令发现没有正在运行的 ghost 实例。（心好累，你的承诺呢）</p>
+<p>键入<code>ghost run</code>，原来是 nvm 没有给 sudo 权限，（为啥你不报错呢？）挑了半天权限没有成功，就借用了一个全局的 nvm：<a href="https://github.com/xtuple/nvm" target="_blank" rel="noopener">nvm-global</a>重新安装了 nvm 和 node，ghost 博客终于成功运行。</p>
+<p>这就是本次 ghost 的踩坑历程。建议使用官方推荐的 Ubuntu16.04 安装 ghost，可能会少踩很多坑，如果遇到了问题，要多去官网<a href="https://docs.ghost.org/docs/troubleshooting-guide" target="_blank" rel="noopener">问题汇总</a>查看，加油~</p>
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">首页</a></li>
+         
+          <li><a href="/about/">关于</a></li>
+         
+          <li><a href="/archives/">归档</a></li>
+         
+          <li><a href="/projects_url">项目</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=https://amoonkin.github.io/install-ghost-via-ghost-cli/" target="_blank" rel="noopener"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=https://amoonkin.github.io/install-ghost-via-ghost-cli/&text=记一次Ghost-CLI的踩坑经历" target="_blank" rel="noopener"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=https://amoonkin.github.io/install-ghost-via-ghost-cli/&title=记一次Ghost-CLI的踩坑经历" target="_blank" rel="noopener"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=https://amoonkin.github.io/install-ghost-via-ghost-cli/&is_video=false&description=记一次Ghost-CLI的踩坑经历" target="_blank" rel="noopener"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=记一次Ghost-CLI的踩坑经历&body=Check out this article: https://amoonkin.github.io/install-ghost-via-ghost-cli/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=https://amoonkin.github.io/install-ghost-via-ghost-cli/&title=记一次Ghost-CLI的踩坑经历" target="_blank" rel="noopener"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=https://amoonkin.github.io/install-ghost-via-ghost-cli/&title=记一次Ghost-CLI的踩坑经历" target="_blank" rel="noopener"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=https://amoonkin.github.io/install-ghost-via-ghost-cli/&title=记一次Ghost-CLI的踩坑经历" target="_blank" rel="noopener"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=https://amoonkin.github.io/install-ghost-via-ghost-cli/&title=记一次Ghost-CLI的踩坑经历" target="_blank" rel="noopener"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=https://amoonkin.github.io/install-ghost-via-ghost-cli/&name=记一次Ghost-CLI的踩坑经历&description=" target="_blank" rel="noopener"><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://news.ycombinator.com/submitlink?u=https://amoonkin.github.io/install-ghost-via-ghost-cli/&t=记一次Ghost-CLI的踩坑经历" target="_blank" rel="noopener"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> 菜单</a>
+        <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> 目录</a>
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> 分享</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> 返回顶部</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2016-2021
+    aMoonkin
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+         
+          <li><a href="/">首页</a></li>
+         
+          <li><a href="/about/">关于</a></li>
+         
+          <li><a href="/archives/">归档</a></li>
+         
+          <li><a href="/projects_url">项目</a></li>
+        
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+ 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script> 
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script> 
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"复制到粘贴板!\">";
+    btn += '<i class="far fa-clone"></i>';
+    btn += '</span>'; 
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "复制成功!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Google Analytics -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Umami Analytics -->
+
+<!-- Disqus Comments -->
+
+
+</body>
+</html>

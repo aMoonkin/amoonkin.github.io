@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="本文还有许多细节未触及、未考究，将持续更新 前文介绍了微前端的原理、现状以及提出了前后端结合的微前端分层设计。本篇将针对这种架构，尝试更深入细节，设计一个微前端框架。 前后端分层前后端分层其实是有多层的：  后台 前端（根元素改变，类似路由 前端（根元素未改变，页面中某个子元素改变了  这就造成了在服务注册，沙盒上，根据不同层次，有些许不同 运行时隔离运行时隔离有两个方向可以走：1 是帮助代码进行">
+<meta property="og:type" content="article">
+<meta property="og:title" content="基于微前端的前后端结合分层设计(设计篇)">
+<meta property="og:url" content="https://amoonkin.github.io/%E5%9F%BA%E4%BA%8E%E5%BE%AE%E5%89%8D%E7%AB%AF%E7%9A%84%E5%89%8D%E5%90%8E%E7%AB%AF%E7%BB%93%E5%90%88%E5%88%86%E5%B1%82%E8%AE%BE%E8%AE%A1-%E8%AE%BE%E8%AE%A1%E7%AF%87/index.html">
+<meta property="og:site_name" content="aMoonkin">
+<meta property="og:description" content="本文还有许多细节未触及、未考究，将持续更新 前文介绍了微前端的原理、现状以及提出了前后端结合的微前端分层设计。本篇将针对这种架构，尝试更深入细节，设计一个微前端框架。 前后端分层前后端分层其实是有多层的：  后台 前端（根元素改变，类似路由 前端（根元素未改变，页面中某个子元素改变了  这就造成了在服务注册，沙盒上，根据不同层次，有些许不同 运行时隔离运行时隔离有两个方向可以走：1 是帮助代码进行">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-04-01T07:32:46.000Z">
+<meta property="article:modified_time" content="2021-05-03T11:21:40.061Z">
+<meta property="article:author" content="aMoonkin">
+<meta property="article:tag" content="microfrontends">
+<meta name="twitter:card" content="summary">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/favicon.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>基于微前端的前后端结合分层设计(设计篇)</title>
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+<meta name="generator" content="Hexo 4.2.1"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" "Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fas fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+         
+          <li><a href="/">首页</a></li>
+         
+          <li><a href="/about/">关于</a></li>
+         
+          <li><a href="/archives/">归档</a></li>
+         
+          <li><a href="/projects_url">项目</a></li>
+        
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="上一篇 " href="/%E4%B8%9A%E7%95%8C%E5%BC%80%E5%8F%91%E6%A8%A1%E5%BC%8F%E4%B8%8E%E6%95%88%E7%8E%87%E6%8F%90%E5%8D%87%E7%9A%84%E6%8E%A2%E7%B4%A2/"><i class="fas fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="下一篇 " href="/%E5%9F%BA%E4%BA%8E%E5%BE%AE%E5%89%8D%E7%AB%AF%E7%9A%84%E5%89%8D%E5%90%8E%E7%AB%AF%E7%BB%93%E5%90%88%E5%88%86%E5%B1%82%E8%AE%BE%E8%AE%A1-%E5%8E%9F%E7%90%86%E7%AF%87/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="返回顶部 " href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="分享文章 " href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">上一篇</span>
+      <span id="i-next" class="info" style="display:none;">下一篇</span>
+      <span id="i-top" class="info" style="display:none;">返回顶部</span>
+      <span id="i-share" class="info" style="display:none;">分享文章</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=https://amoonkin.github.io/%E5%9F%BA%E4%BA%8E%E5%BE%AE%E5%89%8D%E7%AB%AF%E7%9A%84%E5%89%8D%E5%90%8E%E7%AB%AF%E7%BB%93%E5%90%88%E5%88%86%E5%B1%82%E8%AE%BE%E8%AE%A1-%E8%AE%BE%E8%AE%A1%E7%AF%87/" target="_blank" rel="noopener"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=https://amoonkin.github.io/%E5%9F%BA%E4%BA%8E%E5%BE%AE%E5%89%8D%E7%AB%AF%E7%9A%84%E5%89%8D%E5%90%8E%E7%AB%AF%E7%BB%93%E5%90%88%E5%88%86%E5%B1%82%E8%AE%BE%E8%AE%A1-%E8%AE%BE%E8%AE%A1%E7%AF%87/&text=基于微前端的前后端结合分层设计(设计篇)" target="_blank" rel="noopener"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=https://amoonkin.github.io/%E5%9F%BA%E4%BA%8E%E5%BE%AE%E5%89%8D%E7%AB%AF%E7%9A%84%E5%89%8D%E5%90%8E%E7%AB%AF%E7%BB%93%E5%90%88%E5%88%86%E5%B1%82%E8%AE%BE%E8%AE%A1-%E8%AE%BE%E8%AE%A1%E7%AF%87/&title=基于微前端的前后端结合分层设计(设计篇)" target="_blank" rel="noopener"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=https://amoonkin.github.io/%E5%9F%BA%E4%BA%8E%E5%BE%AE%E5%89%8D%E7%AB%AF%E7%9A%84%E5%89%8D%E5%90%8E%E7%AB%AF%E7%BB%93%E5%90%88%E5%88%86%E5%B1%82%E8%AE%BE%E8%AE%A1-%E8%AE%BE%E8%AE%A1%E7%AF%87/&is_video=false&description=基于微前端的前后端结合分层设计(设计篇)" target="_blank" rel="noopener"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=基于微前端的前后端结合分层设计(设计篇)&body=Check out this article: https://amoonkin.github.io/%E5%9F%BA%E4%BA%8E%E5%BE%AE%E5%89%8D%E7%AB%AF%E7%9A%84%E5%89%8D%E5%90%8E%E7%AB%AF%E7%BB%93%E5%90%88%E5%88%86%E5%B1%82%E8%AE%BE%E8%AE%A1-%E8%AE%BE%E8%AE%A1%E7%AF%87/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=https://amoonkin.github.io/%E5%9F%BA%E4%BA%8E%E5%BE%AE%E5%89%8D%E7%AB%AF%E7%9A%84%E5%89%8D%E5%90%8E%E7%AB%AF%E7%BB%93%E5%90%88%E5%88%86%E5%B1%82%E8%AE%BE%E8%AE%A1-%E8%AE%BE%E8%AE%A1%E7%AF%87/&title=基于微前端的前后端结合分层设计(设计篇)" target="_blank" rel="noopener"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=https://amoonkin.github.io/%E5%9F%BA%E4%BA%8E%E5%BE%AE%E5%89%8D%E7%AB%AF%E7%9A%84%E5%89%8D%E5%90%8E%E7%AB%AF%E7%BB%93%E5%90%88%E5%88%86%E5%B1%82%E8%AE%BE%E8%AE%A1-%E8%AE%BE%E8%AE%A1%E7%AF%87/&title=基于微前端的前后端结合分层设计(设计篇)" target="_blank" rel="noopener"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=https://amoonkin.github.io/%E5%9F%BA%E4%BA%8E%E5%BE%AE%E5%89%8D%E7%AB%AF%E7%9A%84%E5%89%8D%E5%90%8E%E7%AB%AF%E7%BB%93%E5%90%88%E5%88%86%E5%B1%82%E8%AE%BE%E8%AE%A1-%E8%AE%BE%E8%AE%A1%E7%AF%87/&title=基于微前端的前后端结合分层设计(设计篇)" target="_blank" rel="noopener"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=https://amoonkin.github.io/%E5%9F%BA%E4%BA%8E%E5%BE%AE%E5%89%8D%E7%AB%AF%E7%9A%84%E5%89%8D%E5%90%8E%E7%AB%AF%E7%BB%93%E5%90%88%E5%88%86%E5%B1%82%E8%AE%BE%E8%AE%A1-%E8%AE%BE%E8%AE%A1%E7%AF%87/&title=基于微前端的前后端结合分层设计(设计篇)" target="_blank" rel="noopener"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=https://amoonkin.github.io/%E5%9F%BA%E4%BA%8E%E5%BE%AE%E5%89%8D%E7%AB%AF%E7%9A%84%E5%89%8D%E5%90%8E%E7%AB%AF%E7%BB%93%E5%90%88%E5%88%86%E5%B1%82%E8%AE%BE%E8%AE%A1-%E8%AE%BE%E8%AE%A1%E7%AF%87/&name=基于微前端的前后端结合分层设计(设计篇)&description=" target="_blank" rel="noopener"><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://news.ycombinator.com/submitlink?u=https://amoonkin.github.io/%E5%9F%BA%E4%BA%8E%E5%BE%AE%E5%89%8D%E7%AB%AF%E7%9A%84%E5%89%8D%E5%90%8E%E7%AB%AF%E7%BB%93%E5%90%88%E5%88%86%E5%B1%82%E8%AE%BE%E8%AE%A1-%E8%AE%BE%E8%AE%A1%E7%AF%87/&t=基于微前端的前后端结合分层设计(设计篇)" target="_blank" rel="noopener"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#前后端分层"><span class="toc-number">1.</span> <span class="toc-text">前后端分层</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#运行时隔离"><span class="toc-number">2.</span> <span class="toc-text">运行时隔离</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#js-变量"><span class="toc-number">2.1.</span> <span class="toc-text">js 变量</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#css"><span class="toc-number">2.2.</span> <span class="toc-text">css</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#dom"><span class="toc-number">2.3.</span> <span class="toc-text">dom</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#存储"><span class="toc-number">2.4.</span> <span class="toc-text">存储</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#依赖"><span class="toc-number">2.5.</span> <span class="toc-text">依赖</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#polyfill"><span class="toc-number">2.6.</span> <span class="toc-text">polyfill</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#服务注册与发现"><span class="toc-number">3.</span> <span class="toc-text">服务注册与发现</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#路由"><span class="toc-number">4.</span> <span class="toc-text">路由</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#应用销毁"><span class="toc-number">4.1.</span> <span class="toc-text">应用销毁</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#通信"><span class="toc-number">5.</span> <span class="toc-text">通信</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#CustomEvent-vs-EventBus"><span class="toc-number">5.1.</span> <span class="toc-text">CustomEvent vs EventBus</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#EventBus-调用栈跟踪"><span class="toc-number">5.2.</span> <span class="toc-text">EventBus 调用栈跟踪</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#应用版本"><span class="toc-number">6.</span> <span class="toc-text">应用版本</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#其他插件"><span class="toc-number">7.</span> <span class="toc-text">其他插件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#依赖控制"><span class="toc-number">8.</span> <span class="toc-text">依赖控制</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#依赖管理"><span class="toc-number">8.1.</span> <span class="toc-text">依赖管理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#依赖注入"><span class="toc-number">8.2.</span> <span class="toc-text">依赖注入</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#结束语"><span class="toc-number">9.</span> <span class="toc-text">结束语</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#参考文档"><span class="toc-number">10.</span> <span class="toc-text">参考文档</span></a></li></ol>
+    </div>
+  </span>
+</div>
+
+    
+    <div class="content index py4">
+        
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        基于微前端的前后端结合分层设计(设计篇)
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span itemprop="name">aMoonkin</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2020-04-01T07:32:46.000Z" itemprop="datePublished">2020-04-01</time>
+        
+      
+    </div>
+
+
+      
+
+      
+    <div class="article-tag">
+        <i class="fas fa-tag"></i>
+        <a class="tag-link" href="/tags/microfrontends/" rel="tag">microfrontends</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <p>本文还有许多细节未触及、未考究，将持续更新</p>
+<p><a href="/基于微前端的前后端结合分层设计-原理篇">前文</a>介绍了微前端的原理、现状以及提出了前后端结合的微前端分层设计。本篇将针对这种架构，尝试更深入细节，设计一个微前端框架。</p>
+<h2 id="前后端分层"><a href="#前后端分层" class="headerlink" title="前后端分层"></a>前后端分层</h2><p>前后端分层其实是有多层的：</p>
+<ol>
+<li>后台</li>
+<li>前端（根元素改变，类似路由</li>
+<li>前端（根元素未改变，页面中某个子元素改变了</li>
+</ol>
+<p>这就造成了在服务注册，沙盒上，根据不同层次，有些许不同</p>
+<h2 id="运行时隔离"><a href="#运行时隔离" class="headerlink" title="运行时隔离"></a>运行时隔离</h2><p>运行时隔离有两个方向可以走：1 是帮助代码进行编译期隔离，自然而然运行时隔离，</p>
+<ul>
+<li>使用变量混淆&amp;加前缀 or 类似模块化的闭包：</li>
+<li>在有打包器(webpack 等)的前提下简单易行，webpack 加个 loader，根据业务子应用的标示加前缀/混淆</li>
+</ul>
+<p>2 是沙盒，在运行期切换上下文来做到运行时隔离： 存储上下文，切换上下文，详细可参考<a href="#参考文档">[2]</a>，有一点需要注意，不切换页面（第 2 层），与页面相关的沙盒(dom, css)是没有意义的</p>
+<p>当然事情不是非黑即白的，我们可以在这两者间进行取舍。</p>
+<p>首先确定会发生冲突的有哪些：</p>
+<ul>
+<li>js 变量</li>
+<li>css</li>
+<li>dom</li>
+<li>存储</li>
+<li>依赖</li>
+<li>polyfill</li>
+</ul>
+<p>如果应用运行时切换，上述场景皆可以在运行时拥有自己的上下文，但是</p>
+<ol>
+<li>如果需要获取另一个上下文中的内容，如需要获取 dom，如何获取？</li>
+<li>但是否会太重了？要去支持某种切换是否也可以作为插件进行？</li>
+</ol>
+<p>对于 1 问题，仔细想想，除 dom 之外似乎并没有必要性。恰好 dom 的沙盒实现我也没想清楚(延迟函数，切换页面后执行？)，等后续想明白的再做补充。</p>
+<p>对于 2 问题，要分场景讨论：</p>
+<h3 id="js-变量"><a href="#js-变量" class="headerlink" title="js 变量"></a>js 变量</h3><ul>
+<li>(optional)对于一般变量，如果不以 var 在全局声明，或者已经处于某个模块内，无须处理</li>
+<li>对于全局变量，或者现有的 BOM 等对象，运行时切换很必要，然而这里有 location 的坑<a href="#参考文档">[1]</a>（我并未深入研究</li>
+<li>沙盒：任意两个子应用皆需要沙盒</li>
+</ul>
+<h3 id="css"><a href="#css" class="headerlink" title="css"></a>css</h3><ul>
+<li>(optional)是否有运行时切换完全看是否需要，可以以 loader 帮助前缀的形式解决</li>
+</ul>
+<h3 id="dom"><a href="#dom" class="headerlink" title="dom"></a>dom</h3><ul>
+<li>(optional)事件：加前缀完全可以解决</li>
+<li>(optional)元素：除标签选择器之外，皆可使用直接加前缀来解决；标签选择器可以约束当前微前端父 dom 元素来解决</li>
+</ul>
+<h3 id="存储"><a href="#存储" class="headerlink" title="存储"></a>存储</h3><p>(optional)存储的 key 也可以加前缀</p>
+<h3 id="依赖"><a href="#依赖" class="headerlink" title="依赖"></a>依赖</h3><p>(optional)虽然各个业务子应用有依赖的控制权，但依赖一定是可以全局管控的，无非是想不想/方不方便/应不应该管控，详见<a href="#依赖管理">依赖管理</a></p>
+<h3 id="polyfill"><a href="#polyfill" class="headerlink" title="polyfill"></a>polyfill</h3><p>polyfill 情况比较复杂，一方面，去修改了现有对象的原型，与 js 变量第二条相似，需要运行时切换。另一方面，又与依赖相似。可以管控。</p>
+<p>如果内部存在规范并且能执行规范，则不需要运行时甚至 loader 也可以；不过头条的艾石光大佬在<a href="https://www.bilibili.com/video/BV1A7411G7se?t=510&p=3" target="_blank" rel="noopener">视频</a>中说到：</p>
+<blockquote>
+<p>规范本身没有什么意义，只有能够在工程上 enforce，才有意义</p>
+</blockquote>
+<p>在我有限的开发管理经验中，我认为这句话是正确的。(@xiaoluoHe 说：也有意义，不会写的人看下该怎么写，哈哈)。</p>
+<p>综上，可选项皆可以插件化，必须处理的只有全局变量，全局对象足以。</p>
+<h2 id="服务注册与发现"><a href="#服务注册与发现" class="headerlink" title="服务注册与发现"></a>服务注册与发现</h2><p>服务发现头条的文章讲得也很详细了。<a href="https://juejin.im/post/5e17f064e51d45315d648b95#heading-6" target="_blank" rel="noopener">ref</a>。<br>前后结合，向中心注册时，即注册到后台的微服务，这样的一个好处是，后台承担服务发现的工作，前端只需要 load 服务即可。<br>而单纯前端不需要注册，只需要在用的时候 load 服务即可，load 过程会向后台查询所需的微服务及其 entry。</p>
+<h2 id="路由"><a href="#路由" class="headerlink" title="路由"></a>路由</h2><p>前一篇提到，路由不是必须的，有后台存在的情况下大可以把路由工作交给后台，<br>实现路由的方参考<a href="https://juejin.im/post/5ac61da66fb9a028c71eae1b" target="_blank" rel="noopener">面试官: 你了解前端路由吗?</a></p>
+<p>将路由与前后端分层-第二层相关联可能是一个帮助进行 dom，css 沙盒隔离的好办法</p>
+<p>如果把路由设计为插件，需要在主应用声明路由依赖及声明路由</p>
+<h3 id="应用销毁"><a href="#应用销毁" class="headerlink" title="应用销毁"></a>应用销毁</h3><p>除了使用路由进行沙盒隔离，我们还可以采用销毁业务子应用的方法，如果当前页面已经被其他子应用占据，子应用可以自行保存上下文（如存储 or 后台），并直接销毁当前应用。这种方式与生命周期钩子有关。</p>
+<h2 id="通信"><a href="#通信" class="headerlink" title="通信"></a>通信</h2><p>这里主要讨论下以下 2 点：</p>
+<h3 id="CustomEvent-vs-EventBus"><a href="#CustomEvent-vs-EventBus" class="headerlink" title="CustomEvent vs EventBus"></a>CustomEvent vs EventBus</h3><p>蚂蚁的 kuitos 大佬在<a href="https://zhuanlan.zhihu.com/p/95085796" target="_blank" rel="noopener">微前端方案正确的架构姿势</a>提到</p>
+<blockquote>
+<p>比如在通信机制的设计与选择上，尽量基于浏览器原生的 CustomEvent api，而不是自己搞的 pub/sub。</p>
+</blockquote>
+<p>这里有些不同想法，之前遇到过一个坑，即<code>CustomEvent</code>传参会经历序列化和反序列化，导致某些对象(比如 window)/方法是无法传过去的。</p>
+<p><code>EventBus</code>通信作为插件貌似比较简单，只需要在不同的微服务中引入同一个<code>EventBus</code>实例，将其挂载在全局即可，但多少都有少许不雅观或者见<a href="#依赖注入">依赖注入</a></p>
+<h3 id="EventBus-调用栈跟踪"><a href="#EventBus-调用栈跟踪" class="headerlink" title="EventBus 调用栈跟踪"></a>EventBus 调用栈跟踪</h3><p>TODO·</p>
+<p>在看<a href="https://v8.js.cn/blog/fast-async/" target="_blank" rel="noopener">这篇 v8 异步博文</a>的时候想起来，用异步 eventbus 会导致调用栈问题，思考了一下，同步会造成阻塞，还是建议使用异步。</p>
+<h2 id="应用版本"><a href="#应用版本" class="headerlink" title="应用版本"></a>应用版本</h2><p>有三处与应用版本相关的之处：</p>
+<ol>
+<li>在服务注册时，应注册应用的版本</li>
+<li>在子应用 load 时，查找对应的 entry 地址并返回</li>
+<li>可选，在通信时，确定究竟是哪个应用注册的事件</li>
+</ol>
+<p>如果将应用版本设计为插件，对于</p>
+<ol>
+<li>后台服务&amp;服务注册时可提供可选字段及默认选项</li>
+<li>可选，通信提供可选字段及默认选项</li>
+</ol>
+<h2 id="其他插件"><a href="#其他插件" class="headerlink" title="其他插件"></a>其他插件</h2><ul>
+<li>对于某种框架(react, vue, angular, jquery 等)的 load 插件</li>
+<li>后台服务注册，服务发现的插件</li>
+<li>…</li>
+</ul>
+<h2 id="依赖控制"><a href="#依赖控制" class="headerlink" title="依赖控制"></a>依赖控制</h2><p>依赖的控制分为两部分，一部分是外部依赖的管理，一部分是上述插件的注入</p>
+<h3 id="依赖管理"><a href="#依赖管理" class="headerlink" title="依赖管理"></a>依赖管理</h3><p>各应用分布自治，且框架允许不同版本，不同依赖运行时隔离，必然会带来依赖的管理问题。</p>
+<p>需要人去管控依赖，各团队将所需依赖统一上报，集中讨论依赖及版本。将各个依赖皆提供为依赖子应用的形式，业务子应用在其入口声明依赖该依赖子应用即可。声明后的依赖将会挂载在对应根 dom 的 head 中。</p>
+<p>需要退化机制，即子应用在加载时，先确认全局环境下是否有此依赖，如果没有则加载，如果有则无视之。这个步骤也可以在框架内实现：子应用启动时声明依赖，如果依赖存在，切换上下文时进行保留；如果依赖不存在，业务子应用自行挂载，并且通知框架依赖该依赖的元素。</p>
+<p>这种方式不失为一个不错的解决方案，但有两个问题，一是，对开发不友好，业务子应用无法脱离全局环境独立开发、运行、测试。二是在团队内部这种方式可行，但在跨团队时可以说必然会出现问题。</p>
+<p>框架只能提供允许团队这样操作的能力，但无法处理此类问题。</p>
+<h3 id="依赖注入"><a href="#依赖注入" class="headerlink" title="依赖注入"></a>依赖注入</h3><p>拿通信举例，在主应用声明通信依赖，加载 bus 子应用，内含 bus 实例；业务在闭包外子应用声明，在 mount 时，框架在闭包的参数中为其注入 bus 实例。</p>
+<h2 id="结束语"><a href="#结束语" class="headerlink" title="结束语"></a>结束语</h2><p>暂时能想到的就这么多，里面可能存在一些问题，也有很多未提及的地方，后续慢慢补充。各位看官见谅。</p>
+<h2 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h2><ol>
+<li><a href="https://juejin.im/post/5e17f064e51d45315d648b95" target="_blank" rel="noopener">前端微服务在字节跳动的打磨与应用</a></li>
+<li><a href="https://juejin.im/post/5e4941d46fb9a07c8334d3e9" target="_blank" rel="noopener">字节跳动的微前端沙盒实践</a></li>
+</ol>
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">首页</a></li>
+         
+          <li><a href="/about/">关于</a></li>
+         
+          <li><a href="/archives/">归档</a></li>
+         
+          <li><a href="/projects_url">项目</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#前后端分层"><span class="toc-number">1.</span> <span class="toc-text">前后端分层</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#运行时隔离"><span class="toc-number">2.</span> <span class="toc-text">运行时隔离</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#js-变量"><span class="toc-number">2.1.</span> <span class="toc-text">js 变量</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#css"><span class="toc-number">2.2.</span> <span class="toc-text">css</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#dom"><span class="toc-number">2.3.</span> <span class="toc-text">dom</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#存储"><span class="toc-number">2.4.</span> <span class="toc-text">存储</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#依赖"><span class="toc-number">2.5.</span> <span class="toc-text">依赖</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#polyfill"><span class="toc-number">2.6.</span> <span class="toc-text">polyfill</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#服务注册与发现"><span class="toc-number">3.</span> <span class="toc-text">服务注册与发现</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#路由"><span class="toc-number">4.</span> <span class="toc-text">路由</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#应用销毁"><span class="toc-number">4.1.</span> <span class="toc-text">应用销毁</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#通信"><span class="toc-number">5.</span> <span class="toc-text">通信</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#CustomEvent-vs-EventBus"><span class="toc-number">5.1.</span> <span class="toc-text">CustomEvent vs EventBus</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#EventBus-调用栈跟踪"><span class="toc-number">5.2.</span> <span class="toc-text">EventBus 调用栈跟踪</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#应用版本"><span class="toc-number">6.</span> <span class="toc-text">应用版本</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#其他插件"><span class="toc-number">7.</span> <span class="toc-text">其他插件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#依赖控制"><span class="toc-number">8.</span> <span class="toc-text">依赖控制</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#依赖管理"><span class="toc-number">8.1.</span> <span class="toc-text">依赖管理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#依赖注入"><span class="toc-number">8.2.</span> <span class="toc-text">依赖注入</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#结束语"><span class="toc-number">9.</span> <span class="toc-text">结束语</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#参考文档"><span class="toc-number">10.</span> <span class="toc-text">参考文档</span></a></li></ol>
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=https://amoonkin.github.io/%E5%9F%BA%E4%BA%8E%E5%BE%AE%E5%89%8D%E7%AB%AF%E7%9A%84%E5%89%8D%E5%90%8E%E7%AB%AF%E7%BB%93%E5%90%88%E5%88%86%E5%B1%82%E8%AE%BE%E8%AE%A1-%E8%AE%BE%E8%AE%A1%E7%AF%87/" target="_blank" rel="noopener"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=https://amoonkin.github.io/%E5%9F%BA%E4%BA%8E%E5%BE%AE%E5%89%8D%E7%AB%AF%E7%9A%84%E5%89%8D%E5%90%8E%E7%AB%AF%E7%BB%93%E5%90%88%E5%88%86%E5%B1%82%E8%AE%BE%E8%AE%A1-%E8%AE%BE%E8%AE%A1%E7%AF%87/&text=基于微前端的前后端结合分层设计(设计篇)" target="_blank" rel="noopener"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=https://amoonkin.github.io/%E5%9F%BA%E4%BA%8E%E5%BE%AE%E5%89%8D%E7%AB%AF%E7%9A%84%E5%89%8D%E5%90%8E%E7%AB%AF%E7%BB%93%E5%90%88%E5%88%86%E5%B1%82%E8%AE%BE%E8%AE%A1-%E8%AE%BE%E8%AE%A1%E7%AF%87/&title=基于微前端的前后端结合分层设计(设计篇)" target="_blank" rel="noopener"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=https://amoonkin.github.io/%E5%9F%BA%E4%BA%8E%E5%BE%AE%E5%89%8D%E7%AB%AF%E7%9A%84%E5%89%8D%E5%90%8E%E7%AB%AF%E7%BB%93%E5%90%88%E5%88%86%E5%B1%82%E8%AE%BE%E8%AE%A1-%E8%AE%BE%E8%AE%A1%E7%AF%87/&is_video=false&description=基于微前端的前后端结合分层设计(设计篇)" target="_blank" rel="noopener"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=基于微前端的前后端结合分层设计(设计篇)&body=Check out this article: https://amoonkin.github.io/%E5%9F%BA%E4%BA%8E%E5%BE%AE%E5%89%8D%E7%AB%AF%E7%9A%84%E5%89%8D%E5%90%8E%E7%AB%AF%E7%BB%93%E5%90%88%E5%88%86%E5%B1%82%E8%AE%BE%E8%AE%A1-%E8%AE%BE%E8%AE%A1%E7%AF%87/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=https://amoonkin.github.io/%E5%9F%BA%E4%BA%8E%E5%BE%AE%E5%89%8D%E7%AB%AF%E7%9A%84%E5%89%8D%E5%90%8E%E7%AB%AF%E7%BB%93%E5%90%88%E5%88%86%E5%B1%82%E8%AE%BE%E8%AE%A1-%E8%AE%BE%E8%AE%A1%E7%AF%87/&title=基于微前端的前后端结合分层设计(设计篇)" target="_blank" rel="noopener"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=https://amoonkin.github.io/%E5%9F%BA%E4%BA%8E%E5%BE%AE%E5%89%8D%E7%AB%AF%E7%9A%84%E5%89%8D%E5%90%8E%E7%AB%AF%E7%BB%93%E5%90%88%E5%88%86%E5%B1%82%E8%AE%BE%E8%AE%A1-%E8%AE%BE%E8%AE%A1%E7%AF%87/&title=基于微前端的前后端结合分层设计(设计篇)" target="_blank" rel="noopener"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=https://amoonkin.github.io/%E5%9F%BA%E4%BA%8E%E5%BE%AE%E5%89%8D%E7%AB%AF%E7%9A%84%E5%89%8D%E5%90%8E%E7%AB%AF%E7%BB%93%E5%90%88%E5%88%86%E5%B1%82%E8%AE%BE%E8%AE%A1-%E8%AE%BE%E8%AE%A1%E7%AF%87/&title=基于微前端的前后端结合分层设计(设计篇)" target="_blank" rel="noopener"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=https://amoonkin.github.io/%E5%9F%BA%E4%BA%8E%E5%BE%AE%E5%89%8D%E7%AB%AF%E7%9A%84%E5%89%8D%E5%90%8E%E7%AB%AF%E7%BB%93%E5%90%88%E5%88%86%E5%B1%82%E8%AE%BE%E8%AE%A1-%E8%AE%BE%E8%AE%A1%E7%AF%87/&title=基于微前端的前后端结合分层设计(设计篇)" target="_blank" rel="noopener"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=https://amoonkin.github.io/%E5%9F%BA%E4%BA%8E%E5%BE%AE%E5%89%8D%E7%AB%AF%E7%9A%84%E5%89%8D%E5%90%8E%E7%AB%AF%E7%BB%93%E5%90%88%E5%88%86%E5%B1%82%E8%AE%BE%E8%AE%A1-%E8%AE%BE%E8%AE%A1%E7%AF%87/&name=基于微前端的前后端结合分层设计(设计篇)&description=" target="_blank" rel="noopener"><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://news.ycombinator.com/submitlink?u=https://amoonkin.github.io/%E5%9F%BA%E4%BA%8E%E5%BE%AE%E5%89%8D%E7%AB%AF%E7%9A%84%E5%89%8D%E5%90%8E%E7%AB%AF%E7%BB%93%E5%90%88%E5%88%86%E5%B1%82%E8%AE%BE%E8%AE%A1-%E8%AE%BE%E8%AE%A1%E7%AF%87/&t=基于微前端的前后端结合分层设计(设计篇)" target="_blank" rel="noopener"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> 菜单</a>
+        <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> 目录</a>
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> 分享</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> 返回顶部</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2016-2021
+    aMoonkin
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+         
+          <li><a href="/">首页</a></li>
+         
+          <li><a href="/about/">关于</a></li>
+         
+          <li><a href="/archives/">归档</a></li>
+         
+          <li><a href="/projects_url">项目</a></li>
+        
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+ 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script> 
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script> 
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"复制到粘贴板!\">";
+    btn += '<i class="far fa-clone"></i>';
+    btn += '</span>'; 
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "复制成功!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Google Analytics -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Umami Analytics -->
+
+<!-- Disqus Comments -->
+
+
+</body>
+</html>

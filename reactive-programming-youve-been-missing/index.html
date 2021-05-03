@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="(原文： @andrestaltz，翻译：Mingfei Ding)  你一定对响应式编程很好奇，特别是他的一些变体：包括 Rx, Bacon.js, RAC。 学习的过程是困难的，如果缺乏好的学习材料会更难。在我刚开始学习的时候，我找了许多教程，只发现少数实用的，而且他们还只是抓了表面，从未深入整个架构。文档常常对你理解函数意义没有多大帮助，就像这样：  Rx.Observable.protot">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【翻译】你错过的响应式编程">
+<meta property="og:url" content="https://amoonkin.github.io/reactive-programming-youve-been-missing/index.html">
+<meta property="og:site_name" content="aMoonkin">
+<meta property="og:description" content="(原文： @andrestaltz，翻译：Mingfei Ding)  你一定对响应式编程很好奇，特别是他的一些变体：包括 Rx, Bacon.js, RAC。 学习的过程是困难的，如果缺乏好的学习材料会更难。在我刚开始学习的时候，我找了许多教程，只发现少数实用的，而且他们还只是抓了表面，从未深入整个架构。文档常常对你理解函数意义没有多大帮助，就像这样：  Rx.Observable.protot">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://camo.githubusercontent.com/36c0a9ffd8ed22236bd6237d44a1d3eecbaec336/687474703a2f2f692e696d6775722e636f6d2f634c344d4f73532e706e67">
+<meta property="og:image" content="https://camo.githubusercontent.com/995c301de2f566db10748042a5a67cc5d9ac45d9/687474703a2f2f692e696d6775722e636f6d2f484d47574e4f352e706e67">
+<meta property="og:image" content="https://camo.githubusercontent.com/81e5d63c69768e1b04447d2e246f47540dd83fbd/687474703a2f2f692e696d6775722e636f6d2f65416c4e62306a2e706e67">
+<meta property="og:image" content="https://camo.githubusercontent.com/2a8a9cc75acd13443f588fd7f386bd7a6dcb271a/687474703a2f2f692e696d6775722e636f6d2f48486e6d6c61632e706e67">
+<meta property="og:image" content="https://camo.githubusercontent.com/0b0ac4a249e1c15d7520c220957acfece1af3e95/687474703a2f2f692e696d6775722e636f6d2f4869337a4e7a4a2e706e67">
+<meta property="og:image" content="https://camo.githubusercontent.com/e581baffb3db3e4f749350326af32de8d5ba4363/687474703a2f2f692e696d6775722e636f6d2f4149696d5138432e6a7067">
+<meta property="article:published_time" content="2017-07-21T00:47:00.000Z">
+<meta property="article:modified_time" content="2017-08-06T21:15:19.000Z">
+<meta property="article:author" content="aMoonkin">
+<meta property="article:tag" content="javascript frontend developer">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://camo.githubusercontent.com/36c0a9ffd8ed22236bd6237d44a1d3eecbaec336/687474703a2f2f692e696d6775722e636f6d2f634c344d4f73532e706e67">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/favicon.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>【翻译】你错过的响应式编程</title>
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+<meta name="generator" content="Hexo 4.2.1"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" "Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fas fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+         
+          <li><a href="/">首页</a></li>
+         
+          <li><a href="/about/">关于</a></li>
+         
+          <li><a href="/archives/">归档</a></li>
+         
+          <li><a href="/projects_url">项目</a></li>
+        
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="上一篇 " href="/whats-map-doing/"><i class="fas fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="下一篇 " href="/install-ghost-via-ghost-cli/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="返回顶部 " href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="分享文章 " href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">上一篇</span>
+      <span id="i-next" class="info" style="display:none;">下一篇</span>
+      <span id="i-top" class="info" style="display:none;">返回顶部</span>
+      <span id="i-share" class="info" style="display:none;">分享文章</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=https://amoonkin.github.io/reactive-programming-youve-been-missing/" target="_blank" rel="noopener"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=https://amoonkin.github.io/reactive-programming-youve-been-missing/&text=【翻译】你错过的响应式编程" target="_blank" rel="noopener"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=https://amoonkin.github.io/reactive-programming-youve-been-missing/&title=【翻译】你错过的响应式编程" target="_blank" rel="noopener"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=https://amoonkin.github.io/reactive-programming-youve-been-missing/&is_video=false&description=【翻译】你错过的响应式编程" target="_blank" rel="noopener"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=【翻译】你错过的响应式编程&body=Check out this article: https://amoonkin.github.io/reactive-programming-youve-been-missing/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=https://amoonkin.github.io/reactive-programming-youve-been-missing/&title=【翻译】你错过的响应式编程" target="_blank" rel="noopener"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=https://amoonkin.github.io/reactive-programming-youve-been-missing/&title=【翻译】你错过的响应式编程" target="_blank" rel="noopener"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=https://amoonkin.github.io/reactive-programming-youve-been-missing/&title=【翻译】你错过的响应式编程" target="_blank" rel="noopener"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=https://amoonkin.github.io/reactive-programming-youve-been-missing/&title=【翻译】你错过的响应式编程" target="_blank" rel="noopener"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=https://amoonkin.github.io/reactive-programming-youve-been-missing/&name=【翻译】你错过的响应式编程&description=" target="_blank" rel="noopener"><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://news.ycombinator.com/submitlink?u=https://amoonkin.github.io/reactive-programming-youve-been-missing/&t=【翻译】你错过的响应式编程" target="_blank" rel="noopener"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#“什么是响应式编程”"><span class="toc-number">1.</span> <span class="toc-text">“什么是响应式编程”</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#“为什么我需要考虑采用响应式编程？”"><span class="toc-number">2.</span> <span class="toc-text">“为什么我需要考虑采用响应式编程？”</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#RP编程思想及实例"><span class="toc-number">3.</span> <span class="toc-text">##RP编程思想及实例</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#刷新按钮"><span class="toc-number">4.</span> <span class="toc-text">刷新按钮</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#用流建模3个推荐位"><span class="toc-number">5.</span> <span class="toc-text">用流建模3个推荐位</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#关闭一个推荐和缓存响应"><span class="toc-number">6.</span> <span class="toc-text">关闭一个推荐和缓存响应</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#总结"><span class="toc-number">7.</span> <span class="toc-text">总结</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#下一步"><span class="toc-number">8.</span> <span class="toc-text">下一步</span></a></li></ol>
+    </div>
+  </span>
+</div>
+
+    
+    <div class="content index py4">
+        
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        【翻译】你错过的响应式编程
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span itemprop="name">aMoonkin</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2017-07-21T00:47:00.000Z" itemprop="datePublished">2017-07-21</time>
+        
+      
+    </div>
+
+
+      
+
+      
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <p>(原文： <a href="https://twitter.com/andrestaltz" target="_blank" rel="noopener">@andrestaltz</a>，翻译：Mingfei Ding)</p>
+<hr>
+<p>你一定对响应式编程很好奇，特别是他的一些变体：包括 Rx, Bacon.js, RAC。</p>
+<p>学习的过程是困难的，如果缺乏好的学习材料会更难。在我刚开始学习的时候，我找了许多教程，只发现少数实用的，而且他们还只是抓了表面，从未深入整个架构。文档常常对你理解函数意义没有多大帮助，就像这样：</p>
+<blockquote>
+<p>Rx.Observable.prototype.flatMapLatest(selector, [thisArg])<br>Projects each element of an observable sequence into a new sequence of observable sequences by incorporating the element’s index and then transforms an observable sequence of observable sequences into an observable sequence producing values only from the most recent observable sequence.</p>
+</blockquote>
+<p>喵喵喵？</p>
+<p>我都过两本书，一本只是画了一个大饼，而另一本，则是深入如何使用响应库。我最终使用这种方式学习响应式编程：在用它的同时理解它。当我在Futurice工作的时候，我得以在一个实际项目中使用它，并且当我遇到困难时，得到了同事们的帮助。</p>
+<p>学习过程中最难的一部分在于”Thinking in Reactive”。就是说要放弃原来编程中xx一些旧的命令和习以为常的惯例xx，并且强迫自己的大脑用一种不同的范式工作。我没有在网上找到过一个<br>这方面的教程，而且认为这个世界需要一个实用的关于如何”Thinking in Reactive”的教程，那么你可以开始了，我希望看过这篇文章之后，会对你看文档有帮助。</p>
+<h2 id="“什么是响应式编程”"><a href="#“什么是响应式编程”" class="headerlink" title="“什么是响应式编程”"></a>“什么是响应式编程”</h2><p>网上有许多不好的解释和定义，维基百科太过泛泛和理论性，Stackoverflow规范的答案很明显不适合新手，<a href="http://www.reactivemanifesto.org/" target="_blank" rel="noopener">响应式宣言</a>听起来像是给产品经理听的。微软的<a href="https://rx.codeplex.com/" target="_blank" rel="noopener">Rx terminology</a>“Rx = Observables + LINQ + Schedulers”是一个典型的微软风重量级的库，让我们大多数人难以理解。像“响应式”，“传递改变”这种属于，没有传达出你用MVX风的库有丁点的区别。当然，我们的框架也是视图相应模型，也是传递改变的，如果不这样，没有什么可以渲染出来的。</p>
+<p>那么，让我们解剖一下这吨翔。</p>
+<p>###响应式编程是对异步数据流编程</p>
+<p>在这种程度上而言，没有什么新东西。事件总线或者你的点击事件都是真正的异步事件流，在那上面，你可以观察并且做一些额外的事。响应式就是那个nb的东西。你可以为任何东西创造数据流，而不是仅仅为点击或者悬浮事件。流是很普及的，任何东西都可以成为一个流：变量，用户输入，属性，缓存，数据结构等等。例如，想象一下，你微博上的推送像点击事件一样都是数据流吧。你可以监听它，并根据它做出反应。</p>
+<p><strong>最重要的是，你得到了一个合并，产生，过滤这些流的函数利器</strong>，那就是功能性魔法的地方。一个流可以作为另一个流的输入，甚至多个流可以被当作另一个流的输入。你可以<em>合并</em>两个流。你可以过滤一个流得到另一个只有你感兴趣事件的流，你可以map数据值，从一个流到另一个流。</p>
+<p>既然数据流在响应式中如此的重要，让我们细致观察一下他们，就从我们熟悉的“点击一个按钮”事件流开始。<br><img src="https://camo.githubusercontent.com/36c0a9ffd8ed22236bd6237d44a1d3eecbaec336/687474703a2f2f692e696d6775722e636f6d2f634c344d4f73532e706e67" alt="点击按钮事件流"></p>
+<p>流是将要发生的事件按照时间排序的序列。它可以发射3个不同的东西：值（某种类型的），错误，或者是一个“完成”信号。考虑一下“完成”什么时候发生，例如，当现有包含那个按钮的窗口或者视图关闭的时候。</p>
+<p>我们通过定义一个当值被发出时执行的函数，一个当错误被抛出时执行的函数和一个当“完成”被发出时的函数，来捕获这些发生的事件。有时，后两个可以被省略，因此你可以仅仅关注如何定义第一个函数。对流的“监听”叫做<strong>订阅（subscribing）</strong>。我们定义的函数叫做观察者（observers）。流就是被观察的主体。这就是观察者模式。</p>
+<p>一个画图的替代品是用ASCII画一个图表，我们后面也会在用到它。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">--a---b-c---d---X---|-&gt;</span><br><span class="line"></span><br><span class="line">a, b, c, d are emitted values</span><br><span class="line">X is an error</span><br><span class="line">| is the &#39;completed&#39; signal</span><br><span class="line">---&gt; is the timeline</span><br></pre></td></tr></table></figure>
+<p>因为我们已经对它非常熟悉了，我也不想你无聊，所以让我们做一些新的事：我们将创建从原始点击事件流转换出的新的点击事件流。</p>
+<p>首先，让我们做一个计数流，用来指示你点了多少次按钮。在常见的响应库中每个流都附有很多函数，比如<code>code</code>, <code>filter</code>, <code>scan</code>等等，当你调用这些函数的时候，比如<code>clickStream.map(f)</code>，他返回了一个基于原流的<strong>新流</strong>。它没有修改原流。这个性质成为不变性。它和响应流搭配就像是煎饼卷大葱。它可以让函数写成函数链的形式，就好像<code>clickStream.map(f).scan(g)</code>。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">  clickStream: ---c----c--c----c------c--&gt;</span><br><span class="line">               vvvvv map(c becomes 1) vvvv</span><br><span class="line">               ---1----1--1----1------1--&gt;</span><br><span class="line">               vvvvvvvvv scan(+) vvvvvvvvv</span><br><span class="line">counterStream: ---1----2--3----4------5--&gt;</span><br></pre></td></tr></table></figure>
+
+<p>这个<code>map(f)</code>函数把<code>f</code>函数发射的值替换到一个新流当中。在我们的例子中，我们把点击发射的事件遍历成数值1。这个<code>scan(g)</code>函数汇集了流中所有之前的值，生成了<code>x = g(accumulate, current)</code>，g是一个简单的加法函数。最终，当你触发点击事件时，<code>counterStream</code>发射了一个点击总数值。</p>
+<p>为了展示响应式的真正实力，我们来说说双击事件。为了让他更有趣一点，我们把三击事件也视为双击事件，或者更广泛的说，多击事件都算作双击事件。考虑一下，如果放在以前，实现起来会是什么样的。我保证这听起来很恐怖，而且得用很多变量来保存变量和间隔。</p>
+<p>但是，在响应式编程中，事实上，逻辑仅仅需要四行代码。但是现在让我们无视这些代码，看图思考是理解这些流的最好方式。<br><img src="https://camo.githubusercontent.com/995c301de2f566db10748042a5a67cc5d9ac45d9/687474703a2f2f692e696d6775722e636f6d2f484d47574e4f352e706e67" alt="Click stream"></p>
+<p>灰盒子中是转换函数。首先，简而言之，每当250毫秒的“沉默事件”发生（就是<code>buffer(stream.throttle(250ms)</code>。别担心不理解细节，我们现在只是举个栗子），我们累计了列表中的点击事件。结果返回一个列表的流，我们<code>map</code>一发这整个流中的列表，并把它转化成列表长度对应的值。最终，我们利用<code>filter(x &gt;= 2)函数</code>忽略整数<code>1</code>，这就是生成我们想要的流的三个函数，然后我们订阅这个监听事件，得到我们想要得到的反应。</p>
+<p>我希望你可以享受这个方法的优雅，这个例子只是冰山一角，你可以实现它玩玩。</p>
+<h2 id="“为什么我需要考虑采用响应式编程？”"><a href="#“为什么我需要考虑采用响应式编程？”" class="headerlink" title="“为什么我需要考虑采用响应式编程？”"></a>“为什么我需要考虑采用响应式编程？”</h2><hr>
+<p>反应式编程提高了代码的抽象级别，因此您可以专注于定义业务逻辑的事件的相互依赖关系，而不必不断地解决大量的实现细节。 RP中的代码会更简洁。</p>
+<p>在与数据事件相关的大量UI事件高度交互的现代webapps和移动应用程序中，优势更加明显。 10年前，与网页的互动基本上是向后端提交一个长表单，并向前端执行简单呈现。 应用程序已经演变成更实时：修改单个表单域可以自动触发后端保存，“点赞”等内容可以实时反映给其他在线的用户，等等。</p>
+<p>现在的应用程序拥有丰富的各种实时活动，能够为用户提供高度互动的体验。 我们需要正确处理的工具，而响应式编程就是一个答案。</p>
+<h2 id="RP编程思想及实例"><a href="#RP编程思想及实例" class="headerlink" title="##RP编程思想及实例"></a>##RP编程思想及实例</h2><p> 让我们到现实中来。一个现实世界关于如何以响应式编程的思想思考问题的起步例子。没有xx合成xx的例子，没有解释不全的概念。 在本教程结束之前，我们将会写出真正有效的代码，同时知道我们做每件事是为什么。</p>
+<p>##实现一个“关注谁”推荐框<br>twitter的是这样的：<br><img src="https://camo.githubusercontent.com/81e5d63c69768e1b04447d2e246f47540dd83fbd/687474703a2f2f692e696d6775722e636f6d2f65416c4e62306a2e706e67" alt="Twitter推荐框"></p>
+<p>我们将实现核心功能：</p>
+<ul>
+<li>打开的时候，从API载入账号信息，并展示出三个推荐</li>
+<li>点击刷新的时候，载入三个新的推荐账号</li>
+<li>点击x的时候，清除当前账号，并展现出另一个</li>
+<li>每条都展示用户头像和他们的网站链接</li>
+</ul>
+<p>我们将用Github API展示。<br>在线完整示例:<a href="http://jsfiddle.net/staltz/8jFJH/48" target="_blank" rel="noopener">http://jsfiddle.net/staltz/8jFJH/48</a></p>
+<p>##请求和响应</p>
+<hr>
+<p><strong>你将如何用Rx解决这个问题？</strong>，首先，（几乎）所有东西都可以是一个流，这是Rx的信条。让我们从这个最简单的特性开始：“在启动的时候，从API载入三个账号信息”。没什么特别的，（1）请求，（2）得到响应，（3）渲染响应。那么让我们用一个流展现我们的请求，开始我们可能觉得这个东西杀伤力巨大，但我们也要从最基本的开始。</p>
+<p>首先我们要先做一个请求，如果我们把他建模成一个数据流，他是一个仅仅有一个发射值的流，然后，我们知道我们会有很多请求，但是现在只有一个。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">--a------|-&gt;</span><br><span class="line"></span><br><span class="line">Where a is the string &#39;https:&#x2F;&#x2F;api.github.com&#x2F;users&#39;</span><br></pre></td></tr></table></figure>
+
+<p>这是一个我们想请求的URL流，无论请求事件何时发生，都告诉我们两件事情，何时和何事。“何时”请求被执行就是事件发射的时间。“何事”应该被请求就是被发射的值：一个包含URL的字符串。</p>
+<p>创造一个这样的流在Rx中非常简单，流的官方名字叫做“可观察对象（Observable）”，因为它可以被观察，但是我觉得这个名字有点sb，所以我还是叫他流。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> requestStream = Rx.Observable.just(<span class="string">'https://api.github.com/users'</span>);</span><br></pre></td></tr></table></figure>
+<p>但是现在，那只是一个字符串流，并没有做其他的操作，所以当值被发射时，我们应该做点什么。订阅（<a href="https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/core/observable.md#rxobservableprototypesubscribeobserver--onnext-onerror-oncompleted" target="_blank" rel="noopener">Subscribing</a>）解决的这个问题。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">requestStream.subscribe(<span class="function"><span class="keyword">function</span>(<span class="params">requestUrl</span>) </span>&#123;</span><br><span class="line">  <span class="comment">// execute the request</span></span><br><span class="line">  jQuery.getJSON(requestUrl, <span class="function"><span class="keyword">function</span>(<span class="params">responseData</span>) </span>&#123;</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">  &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>注意到我们用jQuery Ajax回调来解决这个异步的请求操作。但是等一等，Rx就是为了解决异步数据流的。我们不能用点新技术吗？我们来尝试一下：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">requestStream.subscribe(<span class="function"><span class="keyword">function</span>(<span class="params">requestUrl</span>) </span>&#123;</span><br><span class="line">  <span class="comment">// execute the request</span></span><br><span class="line">  <span class="keyword">var</span> responseStream = Rx.Observable.create(<span class="function"><span class="keyword">function</span> (<span class="params">observer</span>) </span>&#123;</span><br><span class="line">    jQuery.getJSON(requestUrl)</span><br><span class="line">    .done(<span class="function"><span class="keyword">function</span>(<span class="params">response</span>) </span>&#123; observer.onNext(response); &#125;)</span><br><span class="line">    .fail(<span class="function"><span class="keyword">function</span>(<span class="params">jqXHR, status, error</span>) </span>&#123; observer.onError(error); &#125;)</span><br><span class="line">    .always(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123; observer.onCompleted(); &#125;);</span><br><span class="line">  &#125;);</span><br><span class="line">  </span><br><span class="line">  responseStream.subscribe(<span class="function"><span class="keyword">function</span>(<span class="params">response</span>) </span>&#123;</span><br><span class="line">    <span class="comment">// do something with the response</span></span><br><span class="line">  &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><code><a href="https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/core/observable.md#rxobservablecreatesubscribe" target="_blank" rel="noopener">Rx.Observable.create()</a></code>通过明确的通知每位观察者（或者订阅者）发生的数据事件（onNext( )）或是错误（errors( )）创造了你自己的流。我们做的就是包装了jQuery Ajax 承诺。<strong>等等，你意思是承诺也是一个可观察对象？</strong></p>
+<p>没错。<br>可观察对象就是升级版的Promise。在Rx中你可以通过<code>var stream = Rx.Observable.fromPromise(promise)</code>轻易地转换Promise=&gt;Observable。唯一的区别是Observable不兼容 Promises/A+规范，但是在概念上没有区别。Promise是单个发射值的Observable，Rx流允许多个返回值。</p>
+<p>那就非常棒了，至少展示了Observable和Promise一样强力。所以如果你相信Promise，也请你相信Rx有这个能力。</p>
+<p>回到我们的例子中来，就像你注意到的，我们把一个<code>subscribe()</code>套在另一个当中，这有点像回调地狱。而且，<code>responseStream</code>是依赖<code>requeststream</code>的。正如你之前听到的，在Rx中，具有很简单的转换和生成新的流的方法，因此，我们应该那样实现它。</p>
+<p>有一个你应该知道的基础函数是<code>map(f)</code>，他让流A中的所有值都通过f( )函数，并且返回一个新的流。如果我们在req和res流中使用它，我们可以map URLs =》返回的Promise。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> responseMetastream = requestStream</span><br><span class="line">  .map(<span class="function"><span class="keyword">function</span>(<span class="params">requestUrl</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> Rx.Observable.fromPromise(jQuery.getJSON(requestUrl));</span><br><span class="line">  &#125;);</span><br></pre></td></tr></table></figure>
+<p>然后我们创造了一个叫“元流”的东西，一个流的流。莫惊慌，元流是一个流，他的每个发射值也是一个流。你可以把它想象成一个指针。每一个发射值都是一个流的指针。在我们的例子里，每一个请求URL都 =》一个指向包含相关响应的一个Promise流的指针。<br><img src="https://camo.githubusercontent.com/2a8a9cc75acd13443f588fd7f386bd7a6dcb271a/687474703a2f2f692e696d6775722e636f6d2f48486e6d6c61632e706e67" alt="Request stream"></p>
+<p>返回的元流看起来有点令人费解，而且好像没帮到我们什么忙，我们只想要一个发射JSON对象的返回流，而不是一个Promise。那么我们就要用到<a href="https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/core/observable.md#rxobservableprototypeflatmapselector-resultselector" target="_blank" rel="noopener">flatMap</a>了：一个可以“扁平”元流的<code>map( )</code>版本，通过把“支流”上发送的所有东西，都在“主流上发送”，来扁平化数据发送。Flatmap并不是用来”fix” Metastream的，因为Metastream也不是一个Bug，这只是一些用来处理Rx中的异步响应(Asynchronous response)的工具。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> responseStream = requestStream</span><br><span class="line">  .flatMap(<span class="function"><span class="keyword">function</span>(<span class="params">requestUrl</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> Rx.Observable.fromPromise(jQuery.getJSON(requestUrl));</span><br><span class="line">  &#125;);</span><br></pre></td></tr></table></figure>
+<p><img src="https://camo.githubusercontent.com/0b0ac4a249e1c15d7520c220957acfece1af3e95/687474703a2f2f692e696d6775722e636f6d2f4869337a4e7a4a2e706e67" alt="req stream"></p>
+<p>很棒，因为响应流是通过请求流定义的，<strong>如果</strong>我们后面有更多的请求，我们会有更多的响应事件发生在响应流上，就像预期的一样。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">requestStream:  --a-----b--c------------|-&gt;</span><br><span class="line">responseStream: -----A--------B-----C---|-&gt;</span><br><span class="line"></span><br><span class="line">(lowercase is a request, uppercase is its response)</span><br></pre></td></tr></table></figure>
+<p>现在我们可以渲染数据了：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">responseStream.subscribe(<span class="function"><span class="keyword">function</span>(<span class="params">response</span>) </span>&#123;</span><br><span class="line">  <span class="comment">// render `response` to the DOM however you wish</span></span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>把代码都放在一起：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> requestStream = Rx.Observable.just(<span class="string">'https://api.github.com/users'</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> responseStream = requestStream</span><br><span class="line">  .flatMap(<span class="function"><span class="keyword">function</span>(<span class="params">requestUrl</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> Rx.Observable.fromPromise(jQuery.getJSON(requestUrl));</span><br><span class="line">  &#125;);</span><br><span class="line"></span><br><span class="line">responseStream.subscribe(<span class="function"><span class="keyword">function</span>(<span class="params">response</span>) </span>&#123;</span><br><span class="line">  <span class="comment">// render `response` to the DOM however you wish</span></span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<h2 id="刷新按钮"><a href="#刷新按钮" class="headerlink" title="刷新按钮"></a>刷新按钮</h2><hr>
+<p>我还没提到返回的json是一个有100个用户的列表。这个API只允许我们设置页面偏移，而不是页面的大小，所以我们用了三个数据，浪费了剩下的97个。我们现在先不管这个事，后面在研究如何缓存这些响应。</p>
+<p>每次刷新键按下的时候，请求流应该发射一个新的URL，然后我们得到一个新的响应。我们需要两件事：1.一个刷新按钮点击事件流（任何东西都可以是一个流），2.我们需要改变请求流，让他以来刷新点击事件流。幸运的是，Rx有直接帮我们完成这些的、基于事件监听的工具。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> refreshButton = <span class="built_in">document</span>.querySelector(<span class="string">'.refresh'</span>);</span><br><span class="line"><span class="keyword">var</span> refreshClickStream = Rx.Observable.fromEvent(refreshButton, <span class="string">'click'</span>);</span><br></pre></td></tr></table></figure>
+
+<p>因为刷新按钮不会自己携带API URL，所以我们需要map click=》实际的URL。现在我们把req stream改成当刷新按钮点击的时候，请求加上一个随机的偏移。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> requestStream = refreshClickStream</span><br><span class="line">	.map(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">		<span class="keyword">var</span> randomOffset = <span class="built_in">Math</span>.floor(<span class="built_in">Math</span>.random()*<span class="number">500</span>);</span><br><span class="line">		<span class="keyword">return</span> <span class="string">'https://api.github.com/user?since='</span> + randomOffset;</span><br><span class="line">	&#125;);</span><br></pre></td></tr></table></figure>
+<p>因为我很笨，而且我也没有自动测试，我打破了先前版本的一些特性。请求不再在刚打开页面的时候发生了，它仅仅在刷新的时候发生。呃…这两者我都需要啊。</p>
+<p>我们知道如何分别写两个流：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> requestOnRefreshStream = refreshClickStream</span><br><span class="line">  .map(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> randomOffset = <span class="built_in">Math</span>.floor(<span class="built_in">Math</span>.random()*<span class="number">500</span>);</span><br><span class="line">    <span class="keyword">return</span> <span class="string">'https://api.github.com/users?since='</span> + randomOffset;</span><br><span class="line">  &#125;);</span><br><span class="line">  </span><br><span class="line"><span class="keyword">var</span> startupRequestStream = Rx.Observable.just(<span class="string">'https://api.github.com/users'</span>);</span><br></pre></td></tr></table></figure>
+<p>但是怎么“合并”这两个流呢？那就用到了<code><a href="https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/core/observable.md#rxobservableprototypemergemaxconcurrent--other" target="_blank" rel="noopener">merge( )</a></code>。用图表来解释，就是这样：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">stream A: ---a--------e-----o-----&gt;</span><br><span class="line">stream B: -----B---C-----D--------&gt;</span><br><span class="line">          vvvvvvvvv merge vvvvvvvvv</span><br><span class="line">          ---a-B---C--e--D--o-----&gt;</span><br></pre></td></tr></table></figure>
+<p>那就很简单了啊：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> requestOnRefreshStream = refreshClickStream</span><br><span class="line">  .map(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> randomOffset = <span class="built_in">Math</span>.floor(<span class="built_in">Math</span>.random()*<span class="number">500</span>);</span><br><span class="line">    <span class="keyword">return</span> <span class="string">'https://api.github.com/users?since='</span> + randomOffset;</span><br><span class="line">  &#125;);</span><br><span class="line">  </span><br><span class="line"><span class="keyword">var</span> startupRequestStream = Rx.Observable.just(<span class="string">'https://api.github.com/users'</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> requestStream = Rx.Observable.merge(</span><br><span class="line">  requestOnRefreshStream, startupRequestStream</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+<p>另一个不用中间流的更清晰的方法是：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> requestStream = refreshClickStream</span><br><span class="line">  .map(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> randomOffset = <span class="built_in">Math</span>.floor(<span class="built_in">Math</span>.random()*<span class="number">500</span>);</span><br><span class="line">    <span class="keyword">return</span> <span class="string">'https://api.github.com/users?since='</span> + randomOffset;</span><br><span class="line">  &#125;)</span><br><span class="line">  .merge(Rx.Observable.just(<span class="string">'https://api.github.com/users'</span>));</span><br></pre></td></tr></table></figure>
+<p>更短、更好读的：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> requestStream = refreshClickStream</span><br><span class="line">  .map(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> randomOffset = <span class="built_in">Math</span>.floor(<span class="built_in">Math</span>.random()*<span class="number">500</span>);</span><br><span class="line">    <span class="keyword">return</span> <span class="string">'https://api.github.com/users?since='</span> + randomOffset;</span><br><span class="line">  &#125;)</span><br><span class="line">  .startWith(<span class="string">'https://api.github.com/users'</span>);</span><br></pre></td></tr></table></figure>
+<p>这个<a href="https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/core/observable.md#rxobservableprototypestartwithscheduler-args" target="_blank" rel="noopener"><code>startWith()</code></a>函数所作就如你所想，无论他的输入流是什么样的，<code>startwith(x)</code>的输出流一开始都是x。但是这还不够<a href="https://en.wikipedia.org/wiki/Don' target=" _blank" rel="noopener" t_repeat_yourself">DRY</a>，我重复了两遍API。一个改善的方法是把<code>startWith()</code>移动到<code>refreshClickStream</code>里面，在启动时模拟一次刷新点击。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> requestStream = refreshClickStream.startWith(<span class="string">'startup click'</span>)</span><br><span class="line">  .map(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> randomOffset = <span class="built_in">Math</span>.floor(<span class="built_in">Math</span>.random()*<span class="number">500</span>);</span><br><span class="line">    <span class="keyword">return</span> <span class="string">'https://api.github.com/users?since='</span> + randomOffset;</span><br><span class="line">  &#125;);</span><br></pre></td></tr></table></figure>
+<p>现在你回去看我“搞坏自动测试”的版本，发现只有一点不同，就是我加上了<code>startWith()</code>。</p>
+<h2 id="用流建模3个推荐位"><a href="#用流建模3个推荐位" class="headerlink" title="用流建模3个推荐位"></a>用流建模3个推荐位</h2><hr>
+<p>迄今为止，我们只是在responseStream的<code>subscribe()</code>渲染了一个推荐元素。现在有了刷新按钮，我们有了一个问题，在你点击‘刷新’的时候，现有的三个推荐没有被clear掉。新的推荐只有在响应返回是出现，但是为了让UI更好看一些，当点击刷新的时候，我们需要清除现有的3个推荐。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">refreshClickStream.subscribe(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="comment">// clear the 3 suggestion DOM elements </span></span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>不，别这么快，朋友，这不好，因为我们有<strong>两个</strong>订阅者影响着推荐DOM元素（另一个是<code>responseStream.subscribe()</code>），而且听起来也不符合<a href="https://en.wikipedia.org/wiki/Separation_of_concerns" target="_blank" rel="noopener">Separation of concerns</a>，还记得响应式信条吗？</p>
+<p><img src="https://camo.githubusercontent.com/e581baffb3db3e4f749350326af32de8d5ba4363/687474703a2f2f692e696d6775722e636f6d2f4149696d5138432e6a7067" alt="everything is a stream"></p>
+<p>我们用流来建模一个推荐，流中每一个发射值都是一个包含着推荐信息的JSON对象。我将会为3个推荐分别做这件事，这就是推荐#1的样子：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> suggestion1Stream = responseStream</span><br><span class="line">  .map(<span class="function"><span class="keyword">function</span>(<span class="params">listUsers</span>) </span>&#123;</span><br><span class="line">    <span class="comment">// get one random user from the list</span></span><br><span class="line">    <span class="keyword">return</span> listUsers[<span class="built_in">Math</span>.floor(<span class="built_in">Math</span>.random()*listUsers.length)];</span><br><span class="line">  &#125;);</span><br></pre></td></tr></table></figure>
+<p>另外两个推荐可以简单地复制粘贴，但这不清真，但是可以让我们的例子看简单，而且我觉得让你自己去思考如何避免重复更好。</p>
+<p>我们不在responseStream的subscribe( )里渲染了，我们在suggestion1Stream的subscribe( )里渲染:</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">suggestion1Stream.subscribe(<span class="function"><span class="keyword">function</span>(<span class="params">suggestion</span>) </span>&#123;</span><br><span class="line">  <span class="comment">// render the 1st suggestion to the DOM</span></span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>回到刚才的“只要刷新，就清除推荐”历来，我们可以map 刷新click=》<code>null</code>，并把它包含到<code>suggestion1Stream</code>中，就像这样。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> suggestion1Stream = responseStream</span><br><span class="line">  .map(<span class="function"><span class="keyword">function</span>(<span class="params">listUsers</span>) </span>&#123;</span><br><span class="line">    <span class="comment">// get one random user from the list</span></span><br><span class="line">    <span class="keyword">return</span> listUsers[<span class="built_in">Math</span>.floor(<span class="built_in">Math</span>.random()*listUsers.length)];</span><br><span class="line">  &#125;)</span><br><span class="line">  .merge(</span><br><span class="line">    refreshClickStream.map(<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123; <span class="keyword">return</span> <span class="literal">null</span>; &#125;)</span><br><span class="line">  );</span><br></pre></td></tr></table></figure>
+<p>当我们渲染的时候，我们把<code>null</code>当做没有数据，以此来隐藏UI元素。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">suggestion1Stream.subscribe(<span class="function"><span class="keyword">function</span>(<span class="params">suggestion</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (suggestion === <span class="literal">null</span>) &#123;</span><br><span class="line">    <span class="comment">// hide the first suggestion DOM element</span></span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="comment">// show the first suggestion DOM element</span></span><br><span class="line">    <span class="comment">// and render the data</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>现在，图表是这样的了：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">refreshClickStream: ----------o--------o----&gt;</span><br><span class="line">     requestStream: -r--------r--------r----&gt;</span><br><span class="line">    responseStream: ----R---------R------R--&gt;   </span><br><span class="line"> suggestion1Stream: ----s-----N---s----N-s--&gt;</span><br><span class="line"> suggestion2Stream: ----q-----N---q----N-q--&gt;</span><br><span class="line"> suggestion3Stream: ----t-----N---t----N-t--&gt;</span><br></pre></td></tr></table></figure>
+<p><code>N</code>表示<code>null</code><br>另外，我们还可以在启动时呈现“空”建议。 这通过将<code>startWith（null）</code>添加到建议流中来完成：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> suggestion1Stream = responseStream</span><br><span class="line">  .map(<span class="function"><span class="keyword">function</span>(<span class="params">listUsers</span>) </span>&#123;</span><br><span class="line">    <span class="comment">// get one random user from the list</span></span><br><span class="line">    <span class="keyword">return</span> listUsers[<span class="built_in">Math</span>.floor(<span class="built_in">Math</span>.random()*listUsers.length)];</span><br><span class="line">  &#125;)</span><br><span class="line">  .merge(</span><br><span class="line">    refreshClickStream.map(<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123; <span class="keyword">return</span> <span class="literal">null</span>; &#125;)</span><br><span class="line">  )</span><br><span class="line">  .startWith(<span class="literal">null</span>);</span><br></pre></td></tr></table></figure>
+<p>结果是：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">refreshClickStream: ----------o---------o----&gt;</span><br><span class="line">     requestStream: -r--------r---------r----&gt;</span><br><span class="line">    responseStream: ----R----------R------R--&gt;   </span><br><span class="line"> suggestion1Stream: -N--s-----N----s----N-s--&gt;</span><br><span class="line"> suggestion2Stream: -N--q-----N----q----N-q--&gt;</span><br><span class="line"> suggestion3Stream: -N--t-----N----t----N-t--&gt;</span><br></pre></td></tr></table></figure>
+
+<h2 id="关闭一个推荐和缓存响应"><a href="#关闭一个推荐和缓存响应" class="headerlink" title="关闭一个推荐和缓存响应"></a>关闭一个推荐和缓存响应</h2><hr>
+<p>还有一个特性没有实现，每个推荐应该都有一个×按钮来关掉它，并且在原位置打开一个新的。乍一想，你可能觉得点击×的时候，做一个新的请求就够了：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> close1Button = <span class="built_in">document</span>.querySelector(<span class="string">'.close1'</span>);</span><br><span class="line"><span class="keyword">var</span> close1ClickStream = Rx.Observable.fromEvent(close1Button, <span class="string">'click'</span>);</span><br><span class="line"><span class="comment">// and the same for close2Button and close3Button</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> requestStream = refreshClickStream.startWith(<span class="string">'startup click'</span>)</span><br><span class="line">  .merge(close1ClickStream) <span class="comment">// we added this</span></span><br><span class="line">  .map(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> randomOffset = <span class="built_in">Math</span>.floor(<span class="built_in">Math</span>.random()*<span class="number">500</span>);</span><br><span class="line">    <span class="keyword">return</span> <span class="string">'https://api.github.com/users?since='</span> + randomOffset;</span><br><span class="line">  &#125;);</span><br></pre></td></tr></table></figure>
+
+<p>这并不会如你的预期工作，这会关掉并且重载所有的推荐，而不是仅仅重载你点击的那一个。有好几种解决这个问题的办法。为了让他更有趣，我们采用重用之前响应的方式解决它。API的响应页面大小是100个user，但是我们只需要三个，所以有很多可用的数据，不用再请求了。</p>
+<p>再一次让我们用流来考虑问题。当我们点击‘close1’时，我们想用最近一次<code>responseStream</code>发射的响应得到一个随机的user，就像这样：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">    requestStream: --r---------------&gt;</span><br><span class="line">   responseStream: ------R-----------&gt;</span><br><span class="line">close1ClickStream: ------------c-----&gt;</span><br><span class="line">suggestion1Stream: ------s-----s-----&gt;</span><br></pre></td></tr></table></figure>
+<p>在Rx *中，有一个名为<code>combineLatest</code>的组合函数似乎是我们需要的。他以两个流A和B为输入，无论任意一个流何时发送数据，<code>combineLatest</code>结合两个流的发射值<code>a</code>,<code>b</code>得到结果<code>c=f(x,y)</code>，<code>f</code>是你自己定义的函数，用图表来解释更清晰：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">stream A: --a-----------e--------i--------&gt;</span><br><span class="line">stream B: -----b----c--------d-------q----&gt;</span><br><span class="line">          vvvvvvvv combineLatest(f) vvvvvvv</span><br><span class="line">          ----AB---AC--EC---ED--ID--IQ----&gt;</span><br><span class="line"></span><br><span class="line">where f is the uppercase function</span><br></pre></td></tr></table></figure>
+<p>我们可以在<code>close1ClickStream</code> 和 <code>responseStream</code>上应用<code>combineLatest()</code>函数，无论关闭1按钮何时被点击，我们都得到<code>suggestion1Stream</code>发射的一个新值。换句话说，<code>combineLatest()</code>是对称的：无论何时在<code>responseStream</code>上发出一个新的响应，他都会把最近的关闭1事件绑定到一个新的推荐上。那很有趣，因为他让我们简化了我们之前的<code>suggestion1Stream</code>代码，就像这样：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> suggestion1Stream = close1ClickStream</span><br><span class="line">  .combineLatest(responseStream,             </span><br><span class="line">    <span class="function"><span class="keyword">function</span>(<span class="params">click, listUsers</span>) </span>&#123;</span><br><span class="line">      <span class="keyword">return</span> listUsers[<span class="built_in">Math</span>.floor(<span class="built_in">Math</span>.random()*listUsers.length)];</span><br><span class="line">    &#125;</span><br><span class="line">  )</span><br><span class="line">  .merge(</span><br><span class="line">    refreshClickStream.map(<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123; <span class="keyword">return</span> <span class="literal">null</span>; &#125;)</span><br><span class="line">  )</span><br><span class="line">  .startWith(<span class="literal">null</span>);</span><br></pre></td></tr></table></figure>
+<p>还有一个问题需要解决。combineLatest()使用最近的两个数据源，但是当其中一个来源没发起任何事件时，combineLatest()无法在Output stream中产生一个Data event。从上边的ASCII图中，你可以看到，在第一个Stream emit a这个值时并没有任何输出产生，只有当第二个Stream emit b时才有值输出。</p>
+<p>有多种方法可以解决这个问题，我们选择最简单的一种，一开始在’close 1’按钮上模拟一个点击事件：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> suggestion1Stream = close1ClickStream.startWith(<span class="string">'startup click'</span>) <span class="comment">// we added this</span></span><br><span class="line">  .combineLatest(responseStream,</span><br><span class="line">    <span class="function"><span class="keyword">function</span>(<span class="params">click, listUsers</span>) </span>&#123;</span><br><span class="line">      <span class="keyword">return</span> listUsers[<span class="built_in">Math</span>.floor(<span class="built_in">Math</span>.random()*listUsers.length)];</span><br><span class="line">    &#125;</span><br><span class="line">  )</span><br><span class="line">  .merge(</span><br><span class="line">    refreshClickStream.map(<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123; <span class="keyword">return</span> <span class="literal">null</span>; &#125;)</span><br><span class="line">  )</span><br><span class="line">  .startWith(<span class="literal">null</span>);</span><br></pre></td></tr></table></figure>
+
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><hr>
+<p>我们做完了，全部的代码是这个样子的：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> refreshButton = <span class="built_in">document</span>.querySelector(<span class="string">'.refresh'</span>);</span><br><span class="line"><span class="keyword">var</span> refreshClickStream = Rx.Observable.fromEvent(refreshButton, <span class="string">'click'</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> closeButton1 = <span class="built_in">document</span>.querySelector(<span class="string">'.close1'</span>);</span><br><span class="line"><span class="keyword">var</span> close1ClickStream = Rx.Observable.fromEvent(closeButton1, <span class="string">'click'</span>);</span><br><span class="line"><span class="comment">// and the same logic for close2 and close3</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> requestStream = refreshClickStream.startWith(<span class="string">'startup click'</span>)</span><br><span class="line">  .map(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> randomOffset = <span class="built_in">Math</span>.floor(<span class="built_in">Math</span>.random()*<span class="number">500</span>);</span><br><span class="line">    <span class="keyword">return</span> <span class="string">'https://api.github.com/users?since='</span> + randomOffset;</span><br><span class="line">  &#125;);</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> responseStream = requestStream</span><br><span class="line">  .flatMap(<span class="function"><span class="keyword">function</span> (<span class="params">requestUrl</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> Rx.Observable.fromPromise($.ajax(&#123;<span class="attr">url</span>: requestUrl&#125;));</span><br><span class="line">  &#125;);</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> suggestion1Stream = close1ClickStream.startWith(<span class="string">'startup click'</span>)</span><br><span class="line">  .combineLatest(responseStream,             </span><br><span class="line">    <span class="function"><span class="keyword">function</span>(<span class="params">click, listUsers</span>) </span>&#123;</span><br><span class="line">      <span class="keyword">return</span> listUsers[<span class="built_in">Math</span>.floor(<span class="built_in">Math</span>.random()*listUsers.length)];</span><br><span class="line">    &#125;</span><br><span class="line">  )</span><br><span class="line">  .merge(</span><br><span class="line">    refreshClickStream.map(<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123; <span class="keyword">return</span> <span class="literal">null</span>; &#125;)</span><br><span class="line">  )</span><br><span class="line">  .startWith(<span class="literal">null</span>);</span><br><span class="line"><span class="comment">// and the same logic for suggestion2Stream and suggestion3Stream</span></span><br><span class="line"></span><br><span class="line">suggestion1Stream.subscribe(<span class="function"><span class="keyword">function</span>(<span class="params">suggestion</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (suggestion === <span class="literal">null</span>) &#123;</span><br><span class="line">    <span class="comment">// hide the first suggestion DOM element</span></span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="comment">// show the first suggestion DOM element</span></span><br><span class="line">    <span class="comment">// and render the data</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p><strong>你可以查看这个最终效果 <a href="http://jsfiddle.net/staltz/8jFJH/48/" target="_blank" rel="noopener">http://jsfiddle.net/staltz/8jFJH/48/</a></strong></p>
+<p>这段代码虽然短小，但实现了不少功能：它适当的使用Separation of concerns实现了对Multiple events的管理，甚至缓存了响应。函数式的风格让代码看起来更加Declarative而非Imperative：我们并非给出一组指令去执行，而是通过定义Stream之间的关系 <strong>定义这是什么</strong>。举个例子，我们使用Rx告诉计算机 _<code>suggestion1Stream</code> <strong>是</strong> 由 ‘close 1’ Stream与最新响应中的一个用户合并(combine)而来，在程序刚运行或者刷新时则是<code>null</code>_。</p>
+<p>留意一下代码中并没有出现如<code>if</code>、<code>for</code>、<code>while</code>这样的控制语句，或者一般JavaScript应用中典型的基于回调的控制流。如果你想使用<code>filter()</code>，上面的<code>subscribe()</code>中甚至可以不用<code>if</code>、<code>else</code>(实现细节留给读者作为练习)。在Rx中，我们有着像<code>map</code>、<code>filter</code>、<code>scan</code>、<code>merge</code>、<code>combineLatest</code>、<code>startWith</code>这样的Stream函数，甚至更多类似的函数去控制一个事件驱动(Event-driven)的程序。这个工具集让你可以用更少的代码实现更多的功能。</p>
+<h2 id="下一步"><a href="#下一步" class="headerlink" title="下一步"></a>下一步</h2><p>如果你觉得Rx*会成为你首选的RP库，花点时间去熟悉这个<a href="https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/core/observable.md" target="_blank" rel="noopener">函数列表</a>，包括了如何转换(transform)、合并(combine)、以及创建Observable。如果你想通过图表去理解这些函数，看一下这份<a href="https://github.com/Netflix/RxJava/wiki/Creating-Observables" target="_blank" rel="noopener">RxJava’s very useful documentation with marble diagrams</a>。无论什么时候你遇到问题，画一下这些图，思考一下，看一下这一大串函数，然后继续思考。以我个人经验，这样效果很明显。</p>
+<p>一旦你开始使用Rx<em>去编程，很有必要去理解<a href="https://github.com/Reactive-Extensions/RxJS/blob/master/doc/gettingstarted/creating.md#cold-vs-hot-observables" target="_blank" rel="noopener">Cold vs Hot Observables</a>中的概念。如果忽略了这些，你一不小心就会被它坑了。我提醒过你了。通过学习真正的函数式编程(Funational programming)去提升自己的技能，并熟悉那些会影响到Rx</em>的问题，比如副作用(Side effect)。</p>
+<p>但是RP不仅仅有Rx<em>。还有相对容易理解的<a href="http://baconjs.github.io/" target="_blank" rel="noopener">Bacon.js</a>，它没有Rx</em>那些怪癖。<a href="http://elm-lang.org/" target="_blank" rel="noopener">Elm Language</a>则以它自己的方式支持RP：它是一门会编译成Javascript + HTML + CSS的FRP <strong>语言</strong>，并有一个<a href="http://debug.elm-lang.org/" target="_blank" rel="noopener">Time travelling debugger</a>。非常NB。</p>
+<p>Rx在需要处理大量事件的Frontend和Apps中非常有用。但它不仅仅能用在客户端，在Backend或者与Database交互时也非常有用。事实上，<a href="http://techblog.netflix.com/2013/02/rxjava-netflix-api.html" target="_blank" rel="noopener">RxJava是实现Netflix’s API服务器端并发的一个重要组件</a>。Rx并不是一个只能在某种应用或者语言中使用的Framework。它本质上是一个在开发任何Event-driven软件中都能使用的编程范式(Paradigm)。</p>
+<p>如果这份教程能帮到你，<a href="https://twitter.com/intent/tweet?original_referer=https%3A%2F%2Fgist.github.com%2Fstaltz%2F868e7e9bc2a7b8c1f754%2F&amp;text=The%20introduction%20to%20Reactive%20Programming%20you%27ve%20been%20missing&amp;tw_p=tweetbutton&amp;url=https%3A%2F%2Fgist.github.com%2Fstaltz%2F868e7e9bc2a7b8c1f754&amp;via=andrestaltz" target="_blank" rel="noopener">请与更多人分享</a>。</p>
+<p><a href="https://gist.github.com/staltz/868e7e9bc2a7b8c1f754" target="_blank" rel="noopener">原文地址</a></p>
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">首页</a></li>
+         
+          <li><a href="/about/">关于</a></li>
+         
+          <li><a href="/archives/">归档</a></li>
+         
+          <li><a href="/projects_url">项目</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#“什么是响应式编程”"><span class="toc-number">1.</span> <span class="toc-text">“什么是响应式编程”</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#“为什么我需要考虑采用响应式编程？”"><span class="toc-number">2.</span> <span class="toc-text">“为什么我需要考虑采用响应式编程？”</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#RP编程思想及实例"><span class="toc-number">3.</span> <span class="toc-text">##RP编程思想及实例</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#刷新按钮"><span class="toc-number">4.</span> <span class="toc-text">刷新按钮</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#用流建模3个推荐位"><span class="toc-number">5.</span> <span class="toc-text">用流建模3个推荐位</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#关闭一个推荐和缓存响应"><span class="toc-number">6.</span> <span class="toc-text">关闭一个推荐和缓存响应</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#总结"><span class="toc-number">7.</span> <span class="toc-text">总结</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#下一步"><span class="toc-number">8.</span> <span class="toc-text">下一步</span></a></li></ol>
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=https://amoonkin.github.io/reactive-programming-youve-been-missing/" target="_blank" rel="noopener"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=https://amoonkin.github.io/reactive-programming-youve-been-missing/&text=【翻译】你错过的响应式编程" target="_blank" rel="noopener"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=https://amoonkin.github.io/reactive-programming-youve-been-missing/&title=【翻译】你错过的响应式编程" target="_blank" rel="noopener"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=https://amoonkin.github.io/reactive-programming-youve-been-missing/&is_video=false&description=【翻译】你错过的响应式编程" target="_blank" rel="noopener"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=【翻译】你错过的响应式编程&body=Check out this article: https://amoonkin.github.io/reactive-programming-youve-been-missing/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=https://amoonkin.github.io/reactive-programming-youve-been-missing/&title=【翻译】你错过的响应式编程" target="_blank" rel="noopener"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=https://amoonkin.github.io/reactive-programming-youve-been-missing/&title=【翻译】你错过的响应式编程" target="_blank" rel="noopener"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=https://amoonkin.github.io/reactive-programming-youve-been-missing/&title=【翻译】你错过的响应式编程" target="_blank" rel="noopener"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=https://amoonkin.github.io/reactive-programming-youve-been-missing/&title=【翻译】你错过的响应式编程" target="_blank" rel="noopener"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=https://amoonkin.github.io/reactive-programming-youve-been-missing/&name=【翻译】你错过的响应式编程&description=" target="_blank" rel="noopener"><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://news.ycombinator.com/submitlink?u=https://amoonkin.github.io/reactive-programming-youve-been-missing/&t=【翻译】你错过的响应式编程" target="_blank" rel="noopener"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> 菜单</a>
+        <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> 目录</a>
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> 分享</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> 返回顶部</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2016-2021
+    aMoonkin
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+         
+          <li><a href="/">首页</a></li>
+         
+          <li><a href="/about/">关于</a></li>
+         
+          <li><a href="/archives/">归档</a></li>
+         
+          <li><a href="/projects_url">项目</a></li>
+        
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+ 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script> 
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script> 
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"复制到粘贴板!\">";
+    btn += '<i class="far fa-clone"></i>';
+    btn += '</span>'; 
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "复制成功!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Google Analytics -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Umami Analytics -->
+
+<!-- Disqus Comments -->
+
+
+</body>
+</html>

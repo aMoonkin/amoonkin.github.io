@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="How to use Memoize to cache JavaScript function results and speed up your code函数是编程的组成部分，使我们的代码具有模块化和复用性。 用函数将我们的程序分割成块是很常见的，我们利用函数来执行一些有用的操作。 有时，多次调用一个函数会变的代价很高（比如计算一个数的阶乘）。缓存技术可以让我们优化这些程序，并且让他们执行的更快">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【翻译】如何利用记忆化技术缓存JS函数结果并加速你的代码">
+<meta property="og:url" content="https://amoonkin.github.io/memoize-to-cache-javascript-function-results/index.html">
+<meta property="og:site_name" content="aMoonkin">
+<meta property="og:description" content="How to use Memoize to cache JavaScript function results and speed up your code函数是编程的组成部分，使我们的代码具有模块化和复用性。 用函数将我们的程序分割成块是很常见的，我们利用函数来执行一些有用的操作。 有时，多次调用一个函数会变的代价很高（比如计算一个数的阶乘）。缓存技术可以让我们优化这些程序，并且让他们执行的更快">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2017-07-12T06:06:01.000Z">
+<meta property="article:modified_time" content="2017-08-06T21:16:48.000Z">
+<meta property="article:author" content="aMoonkin">
+<meta property="article:tag" content="javascript frontend developer">
+<meta name="twitter:card" content="summary">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/favicon.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>【翻译】如何利用记忆化技术缓存JS函数结果并加速你的代码</title>
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+<meta name="generator" content="Hexo 4.2.1"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" "Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fas fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+         
+          <li><a href="/">首页</a></li>
+         
+          <li><a href="/about/">关于</a></li>
+         
+          <li><a href="/archives/">归档</a></li>
+         
+          <li><a href="/projects_url">项目</a></li>
+        
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="上一篇 " href="/install-ghost-via-ghost-cli/"><i class="fas fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="下一篇 " href="/renxinglun/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="返回顶部 " href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="分享文章 " href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">上一篇</span>
+      <span id="i-next" class="info" style="display:none;">下一篇</span>
+      <span id="i-top" class="info" style="display:none;">返回顶部</span>
+      <span id="i-share" class="info" style="display:none;">分享文章</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=https://amoonkin.github.io/memoize-to-cache-javascript-function-results/" target="_blank" rel="noopener"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=https://amoonkin.github.io/memoize-to-cache-javascript-function-results/&text=【翻译】如何利用记忆化技术缓存JS函数结果并加速你的代码" target="_blank" rel="noopener"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=https://amoonkin.github.io/memoize-to-cache-javascript-function-results/&title=【翻译】如何利用记忆化技术缓存JS函数结果并加速你的代码" target="_blank" rel="noopener"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=https://amoonkin.github.io/memoize-to-cache-javascript-function-results/&is_video=false&description=【翻译】如何利用记忆化技术缓存JS函数结果并加速你的代码" target="_blank" rel="noopener"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=【翻译】如何利用记忆化技术缓存JS函数结果并加速你的代码&body=Check out this article: https://amoonkin.github.io/memoize-to-cache-javascript-function-results/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=https://amoonkin.github.io/memoize-to-cache-javascript-function-results/&title=【翻译】如何利用记忆化技术缓存JS函数结果并加速你的代码" target="_blank" rel="noopener"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=https://amoonkin.github.io/memoize-to-cache-javascript-function-results/&title=【翻译】如何利用记忆化技术缓存JS函数结果并加速你的代码" target="_blank" rel="noopener"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=https://amoonkin.github.io/memoize-to-cache-javascript-function-results/&title=【翻译】如何利用记忆化技术缓存JS函数结果并加速你的代码" target="_blank" rel="noopener"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=https://amoonkin.github.io/memoize-to-cache-javascript-function-results/&title=【翻译】如何利用记忆化技术缓存JS函数结果并加速你的代码" target="_blank" rel="noopener"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=https://amoonkin.github.io/memoize-to-cache-javascript-function-results/&name=【翻译】如何利用记忆化技术缓存JS函数结果并加速你的代码&description=" target="_blank" rel="noopener"><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://news.ycombinator.com/submitlink?u=https://amoonkin.github.io/memoize-to-cache-javascript-function-results/&t=【翻译】如何利用记忆化技术缓存JS函数结果并加速你的代码" target="_blank" rel="noopener"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#How-to-use-Memoize-to-cache-JavaScript-function-results-and-speed-up-your-code"><span class="toc-number">1.</span> <span class="toc-text">How to use Memoize to cache JavaScript function results and speed up your code</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#记忆化摘要"><span class="toc-number">2.</span> <span class="toc-text">记忆化摘要</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#写下你自己的记忆化函数"><span class="toc-number">3.</span> <span class="toc-text">写下你自己的记忆化函数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#记忆递归函数"><span class="toc-number">4.</span> <span class="toc-text">记忆递归函数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#记忆化和缓存相同吗？"><span class="toc-number">5.</span> <span class="toc-text">记忆化和缓存相同吗？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#什么时候记忆你的函数？"><span class="toc-number">6.</span> <span class="toc-text">什么时候记忆你的函数？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#扩展阅读"><span class="toc-number">7.</span> <span class="toc-text">扩展阅读</span></a></li></ol>
+    </div>
+  </span>
+</div>
+
+    
+    <div class="content index py4">
+        
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        【翻译】如何利用记忆化技术缓存JS函数结果并加速你的代码
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span itemprop="name">aMoonkin</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2017-07-12T06:06:01.000Z" itemprop="datePublished">2017-07-12</time>
+        
+      
+    </div>
+
+
+      
+
+      
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <h3 id="How-to-use-Memoize-to-cache-JavaScript-function-results-and-speed-up-your-code"><a href="#How-to-use-Memoize-to-cache-JavaScript-function-results-and-speed-up-your-code" class="headerlink" title="How to use Memoize to cache JavaScript function results and speed up your code"></a>How to use Memoize to cache JavaScript function results and speed up your code</h3><p>函数是编程的组成部分，使我们的代码具有模块化和复用性。</p>
+<p>用函数将我们的程序分割成块是很常见的，我们利用函数来执行一些有用的操作。</p>
+<p>有时，多次调用一个函数会变的代价很高（比如计算一个数的阶乘）。<strong>缓存技术</strong>可以让我们优化这些程序，并且让他们执行的更快。</p>
+<p>比如，我们有一个返回一个数阶乘的函数：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">factorial</span>(<span class="params">n</span>) </span>&#123;</span><br><span class="line">    <span class="comment">// Calculations: n * (n-1) * (n-2) * ... (2) * (1)</span></span><br><span class="line">    <span class="keyword">return</span> factorial;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>如果我们要算<code>factorial(50)</code>，计算机将执行这个函数 50 次，然后返回最终结果。</p>
+<p>当<code>factorial(50)</code>计算完成后，我们再来算一下<code>factorial(51)</code>，可能你已经发现了，前 50 次的我们已经算过，可以不用重复计算，就像这样：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">factorial(<span class="number">51</span>) = factorial(<span class="number">50</span>) * <span class="number">51</span>;</span><br></pre></td></tr></table></figure>
+
+<p>但是我们的原函数不会这么想，他会在每次调用时都会从头开始执行计算：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">factorial(<span class="number">51</span>) = <span class="number">51</span> * <span class="number">50</span> * <span class="number">49</span> * ... * <span class="number">2</span> * <span class="number">1</span></span><br></pre></td></tr></table></figure>
+
+<p>如果有一种方式，来让我们的<code>factorial</code>函数记住他以前计算过的结果，并且用他来加速代码的执行，是不是很有用呢？</p>
+<p>记忆化出现了，记忆化是一种让程序记住（缓存）他以前计算过的结果的方式，这里是他的定义：</p>
+<blockquote>
+<p>在计算机科学中，记忆化（英语：memoization 而非 memorization）是一种提高程序运行速度的优化技术。通过储存大计算量函数的返回值，当这个结果再次被需要时将其从缓存提取，而不用再次计算来节省计算时间。</p>
+</blockquote>
+<p>记忆化简单来说就是记忆，或者存储在内存里。一个记忆化程序通常更快，因为如果随后函数调用之前的一个值，我们将从缓存中获取结果，而不是执行该函数。</p>
+<p>这里是一个记忆化函数的例子（如果你想测试一下的话，请前往<a href="https://codepen.io/divyanshu013/pen/xdQPvp?editors=0011" target="_blank" rel="noopener">CodePen</a>)</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// a simple function to add something</span></span><br><span class="line"><span class="keyword">const</span> add = <span class="function">(<span class="params">n</span>) =&gt;</span> n + <span class="number">10</span>;</span><br><span class="line">add(<span class="number">9</span>);</span><br><span class="line"><span class="comment">// a simple memoized function to add something</span></span><br><span class="line"><span class="keyword">const</span> memoizedAdd = <span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">let</span> cache = &#123;&#125;;</span><br><span class="line">    <span class="keyword">return</span> <span class="function">(<span class="params">n</span>) =&gt;</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (n <span class="keyword">in</span> cache) &#123;</span><br><span class="line">            <span class="built_in">console</span>.log(<span class="string">"Fetching from cache"</span>);</span><br><span class="line">            <span class="keyword">return</span> cache[n];</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="built_in">console</span>.log(<span class="string">"Calculating result"</span>);</span><br><span class="line">            <span class="keyword">let</span> result = n + <span class="number">10</span>;</span><br><span class="line">            cache[n] = result;</span><br><span class="line">            <span class="keyword">return</span> result;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="comment">// returned function from memoizedAdd</span></span><br><span class="line"><span class="keyword">const</span> newAdd = memoizedAdd();</span><br><span class="line"><span class="built_in">console</span>.log(newAdd(<span class="number">9</span>)); <span class="comment">// calculated</span></span><br><span class="line"><span class="built_in">console</span>.log(newAdd(<span class="number">9</span>)); <span class="comment">// cached</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="记忆化摘要"><a href="#记忆化摘要" class="headerlink" title="记忆化摘要"></a>记忆化摘要</h3><p>下面是上述代码的摘要：</p>
+<ul>
+<li><code>memoizedAdd</code>返回了一个稍后调用的函数，这在 JS 里这是可能的，因为在 JS 中，函数是一类对象，可以将它们用作高顺位函数（也有译高阶函数，<a href="http://eloquentjavascript.net/05_higher_order.html#h_xxCc98lOBK" target="_blank" rel="noopener">higher order functions</a>）并返回另一个函数。</li>
+<li><code>cache</code>可以记录他的值，因为返回的函数存在于闭包（<a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Closures" target="_blank" rel="noopener">closures</a>）之中</li>
+<li>记忆化函数应该是纯净（<a href="https://medium.com/javascript-scene/master-the-javascript-interview-what-is-a-pure-function-d1c076bec976" target="_blank" rel="noopener">pure</a>）的。一个纯净的函数对特定的输入，无论经过多少次调用，都将返回相同的输出，这让<code>cache</code>可以如我们的预期记录数据。</li>
+</ul>
+<h3 id="写下你自己的记忆化函数"><a href="#写下你自己的记忆化函数" class="headerlink" title="写下你自己的记忆化函数"></a>写下你自己的记忆化函数</h3><p>前面的代码运行的不错，但是如何把我们自己的函数变成一个记忆化函数呢？<br>如何写下你自己的记忆化函数（<a href="https://codepen.io/divyanshu013/pen/zwMPdK?editors=0011#code-area" target="_blank" rel="noopener">CodePen</a>）：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// a simple pure function to get a value adding 10</span></span><br><span class="line"><span class="keyword">const</span> add = <span class="function">(<span class="params">n</span>) =&gt;</span> n + <span class="number">10</span>;</span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">"Simple call"</span>, add(<span class="number">3</span>));</span><br><span class="line"><span class="comment">// a simple memoize function that takes in a function</span></span><br><span class="line"><span class="comment">// and returns a memoized function</span></span><br><span class="line"><span class="keyword">const</span> memoize = <span class="function">(<span class="params">fn</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">let</span> cache = &#123;&#125;;</span><br><span class="line">    <span class="keyword">return</span> <span class="function">(<span class="params">...args</span>) =&gt;</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> n = args[<span class="number">0</span>]; <span class="comment">// just taking one argument here</span></span><br><span class="line">        <span class="keyword">if</span> (n <span class="keyword">in</span> cache) &#123;</span><br><span class="line">            <span class="built_in">console</span>.log(<span class="string">"Fetching from cache"</span>);</span><br><span class="line">            <span class="keyword">return</span> cache[n];</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="built_in">console</span>.log(<span class="string">"Calculating result"</span>);</span><br><span class="line">            <span class="keyword">let</span> result = fn(n);</span><br><span class="line">            cache[n] = result;</span><br><span class="line">            <span class="keyword">return</span> result;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="comment">// creating a memoized function for the 'add' pure function</span></span><br><span class="line"><span class="keyword">const</span> memoizedAdd = memoize(add);</span><br><span class="line"><span class="built_in">console</span>.log(memoizedAdd(<span class="number">3</span>)); <span class="comment">// calculated</span></span><br><span class="line"><span class="built_in">console</span>.log(memoizedAdd(<span class="number">3</span>)); <span class="comment">// cached</span></span><br><span class="line"><span class="built_in">console</span>.log(memoizedAdd(<span class="number">4</span>)); <span class="comment">// calculated</span></span><br><span class="line"><span class="built_in">console</span>.log(memoizedAdd(<span class="number">4</span>)); <span class="comment">// cached</span></span><br></pre></td></tr></table></figure>
+
+<p>这个简单的<code>memoize</code>函数将简单函数（<a href="https://zh.wikipedia.org/wiki/%E7%AE%80%E5%8D%95%E5%87%BD%E6%95%B0" target="_blank" rel="noopener">simple functions</a>）包装成一个记忆的等价物。这个函数在简单函数上运行良好，而且可以轻松调整，以适应任何数量的参数。另外一个方式是使用一些 de-facto 库，比如：</p>
+<ul>
+<li><a href="https://lodash.com/docs/4.17.4#memoize" target="_blank" rel="noopener">Lodash</a>’s<code>_.memoize(func, [resolver])</code></li>
+<li>来自<a href="https://github.com/developit/decko#memoize" target="_blank" rel="noopener">decko</a>ES7 @memoize 修饰符（<a href="https://babeljs.io/docs/plugins/transform-decorators/" target="_blank" rel="noopener">Decorators </a>）</li>
+</ul>
+<h3 id="记忆递归函数"><a href="#记忆递归函数" class="headerlink" title="记忆递归函数"></a>记忆递归函数</h3><p>如果你尝试向<code>memoize</code>函数，或者向来自 Lodash 的<code>_.memoize</code>函数传递一个递归函数，结果并不会如你所料，因为其后续调用的递归函数最终将调用自身而不是记忆函数，从而不使用缓存。</p>
+<p>所以只需确保你的递归函数也能调用记忆函数，做如下调整：<a href="https://codepen.io/divyanshu013/pen/JNevOm" target="_blank" rel="noopener">CodePen</a></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// same memoize function from before</span></span><br><span class="line"><span class="keyword">const</span> memoize = <span class="function">(<span class="params">fn</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">let</span> cache = &#123;&#125;;</span><br><span class="line">    <span class="keyword">return</span> <span class="function">(<span class="params">...args</span>) =&gt;</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> n = args[<span class="number">0</span>];</span><br><span class="line">        <span class="keyword">if</span> (n <span class="keyword">in</span> cache) &#123;</span><br><span class="line">            <span class="built_in">console</span>.log(<span class="string">"Fetching from cache"</span>, n);</span><br><span class="line">            <span class="keyword">return</span> cache[n];</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="built_in">console</span>.log(<span class="string">"Calculating result"</span>, n);</span><br><span class="line">            <span class="keyword">let</span> result = fn(n);</span><br><span class="line">            cache[n] = result;</span><br><span class="line">            <span class="keyword">return</span> result;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">const</span> factorial = memoize(<span class="function">(<span class="params">x</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (x === <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> x * factorial(x - <span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br><span class="line"><span class="built_in">console</span>.log(factorial(<span class="number">5</span>)); <span class="comment">// calculated</span></span><br><span class="line"><span class="built_in">console</span>.log(factorial(<span class="number">6</span>)); <span class="comment">// calculated for 6 and cached for 5</span></span><br></pre></td></tr></table></figure>
+
+<p>代码中的一些需要注意的点：</p>
+<ul>
+<li><code>factorial</code>函数递归调用它自己的记忆化版本。</li>
+<li>记忆化函数获取了之前的 factorial 值，显著提高了被重用时的计算速度<code>factorial(6) = 6 * factorial(5)</code></li>
+</ul>
+<h3 id="记忆化和缓存相同吗？"><a href="#记忆化和缓存相同吗？" class="headerlink" title="记忆化和缓存相同吗？"></a>记忆化和缓存相同吗？</h3><p>在某些程度上是的，记忆化实际上是一种缓存的特殊类型。缓存可以总体上指任何一种面向未来的存储技术（比如 HTTP 缓存（<a href="https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Caching_FAQ" target="_blank" rel="noopener">HTTP Caching</a>）），而记忆化特指缓存函数返回值的技术。</p>
+<h3 id="什么时候记忆你的函数？"><a href="#什么时候记忆你的函数？" class="headerlink" title="什么时候记忆你的函数？"></a>什么时候记忆你的函数？</h3><p>尽管看起来记忆化技术能被运用于所有函数，但是他也有一些使用的局限性：</p>
+<ul>
+<li>记忆化函数应该是纯净的，这样他才可以每次对相同的输入返回相同的结果。</li>
+<li>记忆是空间和速度之间的权衡，因此对于具有有限的输入范围的功能而言是重要的，以便可以更频繁地使用缓存的值</li>
+<li>看起来你应该记忆（译者注：原文如此，这里应该说缓存）你的 API 调用，但是并没有必要，因为浏览器自动帮我们做了，如 HTTP 缓存（<a href="https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Caching_FAQ" target="_blank" rel="noopener">HTTP Caching</a>）。</li>
+<li>在我看来，高计算量程序是记忆化技术的最优应用之处，它可以帮助提高程序性能（阶乘和斐波那契不是真正好的现实例子）</li>
+<li>如果在使用 React/Redux，可以看一看<a href="https://github.com/reactjs/reselect#creating-a-memoized-selector" target="_blank" rel="noopener">reselect</a>，它是一个记忆选择器，用来确保你的计算计算进发生在状态树的相关部分发生变化时。</li>
+</ul>
+<h3 id="扩展阅读"><a href="#扩展阅读" class="headerlink" title="扩展阅读"></a>扩展阅读</h3><ul>
+<li><a href="http://eloquentjavascript.net/05_higher_order.html#h_xxCc98lOBK" target="_blank" rel="noopener">higher order functions</a></li>
+<li><a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Closures" target="_blank" rel="noopener">closures</a> in Javascript</li>
+<li><a href="https://medium.com/javascript-scene/master-the-javascript-interview-what-is-a-pure-function-d1c076bec976" target="_blank" rel="noopener">pure</a> functions</li>
+<li>Lodash’s _.memoize <a href="https://lodash.com/docs/4.17.4#memoize" target="_blank" rel="noopener">docs</a> and <a href="https://github.com/lodash/lodash/blob/4.17.4/lodash.js#L10554-L10572" target="_blank" rel="noopener">source code</a></li>
+<li>More memoization examples <a href="https://www.sitepoint.com/implementing-memoization-in-javascript/" target="_blank" rel="noopener">here</a> and <a href="http://inlehmansterms.net/2015/03/01/javascript-memoization/" target="_blank" rel="noopener">here</a></li>
+<li><a href="https://github.com/reactjs/reselect" target="_blank" rel="noopener">reactjs/reselect</a></li>
+</ul>
+<p>我希望本文对你有用，你现在一定更好的理解了 Javascript 中的记忆化技术。</p>
+<p>原文载于 Medium 平台，原文地址[<a href="https://medium.freecodecamp.org/understanding-memoize-in-javascript-51d07d19430e]，作者[Divyanshu" target="_blank" rel="noopener">https://medium.freecodecamp.org/understanding-memoize-in-javascript-51d07d19430e]，作者[Divyanshu</a> Maithani](<a href="https://medium.freecodecamp.org/@divyanshu013)，翻译" target="_blank" rel="noopener">https://medium.freecodecamp.org/@divyanshu013)，翻译</a> Mingfei Ding，转载请注明原文作者及翻译，如果版权问题请联系<a href="mailto:dmf@squirrel.tech">dmf@squirrel.tech</a></p>
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">首页</a></li>
+         
+          <li><a href="/about/">关于</a></li>
+         
+          <li><a href="/archives/">归档</a></li>
+         
+          <li><a href="/projects_url">项目</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#How-to-use-Memoize-to-cache-JavaScript-function-results-and-speed-up-your-code"><span class="toc-number">1.</span> <span class="toc-text">How to use Memoize to cache JavaScript function results and speed up your code</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#记忆化摘要"><span class="toc-number">2.</span> <span class="toc-text">记忆化摘要</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#写下你自己的记忆化函数"><span class="toc-number">3.</span> <span class="toc-text">写下你自己的记忆化函数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#记忆递归函数"><span class="toc-number">4.</span> <span class="toc-text">记忆递归函数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#记忆化和缓存相同吗？"><span class="toc-number">5.</span> <span class="toc-text">记忆化和缓存相同吗？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#什么时候记忆你的函数？"><span class="toc-number">6.</span> <span class="toc-text">什么时候记忆你的函数？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#扩展阅读"><span class="toc-number">7.</span> <span class="toc-text">扩展阅读</span></a></li></ol>
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=https://amoonkin.github.io/memoize-to-cache-javascript-function-results/" target="_blank" rel="noopener"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=https://amoonkin.github.io/memoize-to-cache-javascript-function-results/&text=【翻译】如何利用记忆化技术缓存JS函数结果并加速你的代码" target="_blank" rel="noopener"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=https://amoonkin.github.io/memoize-to-cache-javascript-function-results/&title=【翻译】如何利用记忆化技术缓存JS函数结果并加速你的代码" target="_blank" rel="noopener"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=https://amoonkin.github.io/memoize-to-cache-javascript-function-results/&is_video=false&description=【翻译】如何利用记忆化技术缓存JS函数结果并加速你的代码" target="_blank" rel="noopener"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=【翻译】如何利用记忆化技术缓存JS函数结果并加速你的代码&body=Check out this article: https://amoonkin.github.io/memoize-to-cache-javascript-function-results/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=https://amoonkin.github.io/memoize-to-cache-javascript-function-results/&title=【翻译】如何利用记忆化技术缓存JS函数结果并加速你的代码" target="_blank" rel="noopener"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=https://amoonkin.github.io/memoize-to-cache-javascript-function-results/&title=【翻译】如何利用记忆化技术缓存JS函数结果并加速你的代码" target="_blank" rel="noopener"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=https://amoonkin.github.io/memoize-to-cache-javascript-function-results/&title=【翻译】如何利用记忆化技术缓存JS函数结果并加速你的代码" target="_blank" rel="noopener"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=https://amoonkin.github.io/memoize-to-cache-javascript-function-results/&title=【翻译】如何利用记忆化技术缓存JS函数结果并加速你的代码" target="_blank" rel="noopener"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=https://amoonkin.github.io/memoize-to-cache-javascript-function-results/&name=【翻译】如何利用记忆化技术缓存JS函数结果并加速你的代码&description=" target="_blank" rel="noopener"><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://news.ycombinator.com/submitlink?u=https://amoonkin.github.io/memoize-to-cache-javascript-function-results/&t=【翻译】如何利用记忆化技术缓存JS函数结果并加速你的代码" target="_blank" rel="noopener"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> 菜单</a>
+        <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> 目录</a>
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> 分享</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> 返回顶部</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2016-2021
+    aMoonkin
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+         
+          <li><a href="/">首页</a></li>
+         
+          <li><a href="/about/">关于</a></li>
+         
+          <li><a href="/archives/">归档</a></li>
+         
+          <li><a href="/projects_url">项目</a></li>
+        
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+ 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script> 
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script> 
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"复制到粘贴板!\">";
+    btn += '<i class="far fa-clone"></i>';
+    btn += '</span>'; 
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "复制成功!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Google Analytics -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Umami Analytics -->
+
+<!-- Disqus Comments -->
+
+
+</body>
+</html>

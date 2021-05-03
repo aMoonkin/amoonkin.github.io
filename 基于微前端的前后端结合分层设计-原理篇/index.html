@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="引入什么是微前端微前端(Micro Frontends)意指前端的微服务(Micro Service)。是一种可独立交付的前端应用程序组成大型整体的架构模式[1]。简而言之，微前端继承了微服务“拆”的原则，将前端分成多个模块，各个前端模块独立开发测试、独立部署，是实现大型前端应用的一种的架构。 背景及应用场景当前，已然不是前端应用天然解耦的时代，由前端框架带来的前端单页应用(SPA)已经占据了主流">
+<meta property="og:type" content="article">
+<meta property="og:title" content="基于微前端的前后端结合分层设计(原理篇)">
+<meta property="og:url" content="https://amoonkin.github.io/%E5%9F%BA%E4%BA%8E%E5%BE%AE%E5%89%8D%E7%AB%AF%E7%9A%84%E5%89%8D%E5%90%8E%E7%AB%AF%E7%BB%93%E5%90%88%E5%88%86%E5%B1%82%E8%AE%BE%E8%AE%A1-%E5%8E%9F%E7%90%86%E7%AF%87/index.html">
+<meta property="og:site_name" content="aMoonkin">
+<meta property="og:description" content="引入什么是微前端微前端(Micro Frontends)意指前端的微服务(Micro Service)。是一种可独立交付的前端应用程序组成大型整体的架构模式[1]。简而言之，微前端继承了微服务“拆”的原则，将前端分成多个模块，各个前端模块独立开发测试、独立部署，是实现大型前端应用的一种的架构。 背景及应用场景当前，已然不是前端应用天然解耦的时代，由前端框架带来的前端单页应用(SPA)已经占据了主流">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://amoonkin.github.io/images/e2eMicroFrontends.png">
+<meta property="og:image" content="https://amoonkin.github.io/images/spectrumMicroFrontends.jpeg">
+<meta property="og:image" content="https://amoonkin.github.io/images/solutionMicroFrontends.png">
+<meta property="og:image" content="https://amoonkin.github.io/images/soundMicroFrontends.png">
+<meta property="og:image" content="https://amoonkin.github.io/images/singleMicroFrontends.png">
+<meta property="article:published_time" content="2020-03-28T04:37:49.000Z">
+<meta property="article:modified_time" content="2021-05-03T11:21:40.061Z">
+<meta property="article:author" content="aMoonkin">
+<meta property="article:tag" content="microfrontends">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://amoonkin.github.io/images/e2eMicroFrontends.png">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/favicon.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>基于微前端的前后端结合分层设计(原理篇)</title>
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+<meta name="generator" content="Hexo 4.2.1"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" "Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fas fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+         
+          <li><a href="/">首页</a></li>
+         
+          <li><a href="/about/">关于</a></li>
+         
+          <li><a href="/archives/">归档</a></li>
+         
+          <li><a href="/projects_url">项目</a></li>
+        
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="上一篇 " href="/%E5%9F%BA%E4%BA%8E%E5%BE%AE%E5%89%8D%E7%AB%AF%E7%9A%84%E5%89%8D%E5%90%8E%E7%AB%AF%E7%BB%93%E5%90%88%E5%88%86%E5%B1%82%E8%AE%BE%E8%AE%A1-%E8%AE%BE%E8%AE%A1%E7%AF%87/"><i class="fas fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="下一篇 " href="/%E5%B0%8F%E6%8E%A2js%E4%B8%AD%E8%A1%A8%E8%BE%BE%E5%BC%8F/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="返回顶部 " href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="分享文章 " href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">上一篇</span>
+      <span id="i-next" class="info" style="display:none;">下一篇</span>
+      <span id="i-top" class="info" style="display:none;">返回顶部</span>
+      <span id="i-share" class="info" style="display:none;">分享文章</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=https://amoonkin.github.io/%E5%9F%BA%E4%BA%8E%E5%BE%AE%E5%89%8D%E7%AB%AF%E7%9A%84%E5%89%8D%E5%90%8E%E7%AB%AF%E7%BB%93%E5%90%88%E5%88%86%E5%B1%82%E8%AE%BE%E8%AE%A1-%E5%8E%9F%E7%90%86%E7%AF%87/" target="_blank" rel="noopener"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=https://amoonkin.github.io/%E5%9F%BA%E4%BA%8E%E5%BE%AE%E5%89%8D%E7%AB%AF%E7%9A%84%E5%89%8D%E5%90%8E%E7%AB%AF%E7%BB%93%E5%90%88%E5%88%86%E5%B1%82%E8%AE%BE%E8%AE%A1-%E5%8E%9F%E7%90%86%E7%AF%87/&text=基于微前端的前后端结合分层设计(原理篇)" target="_blank" rel="noopener"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=https://amoonkin.github.io/%E5%9F%BA%E4%BA%8E%E5%BE%AE%E5%89%8D%E7%AB%AF%E7%9A%84%E5%89%8D%E5%90%8E%E7%AB%AF%E7%BB%93%E5%90%88%E5%88%86%E5%B1%82%E8%AE%BE%E8%AE%A1-%E5%8E%9F%E7%90%86%E7%AF%87/&title=基于微前端的前后端结合分层设计(原理篇)" target="_blank" rel="noopener"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=https://amoonkin.github.io/%E5%9F%BA%E4%BA%8E%E5%BE%AE%E5%89%8D%E7%AB%AF%E7%9A%84%E5%89%8D%E5%90%8E%E7%AB%AF%E7%BB%93%E5%90%88%E5%88%86%E5%B1%82%E8%AE%BE%E8%AE%A1-%E5%8E%9F%E7%90%86%E7%AF%87/&is_video=false&description=基于微前端的前后端结合分层设计(原理篇)" target="_blank" rel="noopener"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=基于微前端的前后端结合分层设计(原理篇)&body=Check out this article: https://amoonkin.github.io/%E5%9F%BA%E4%BA%8E%E5%BE%AE%E5%89%8D%E7%AB%AF%E7%9A%84%E5%89%8D%E5%90%8E%E7%AB%AF%E7%BB%93%E5%90%88%E5%88%86%E5%B1%82%E8%AE%BE%E8%AE%A1-%E5%8E%9F%E7%90%86%E7%AF%87/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=https://amoonkin.github.io/%E5%9F%BA%E4%BA%8E%E5%BE%AE%E5%89%8D%E7%AB%AF%E7%9A%84%E5%89%8D%E5%90%8E%E7%AB%AF%E7%BB%93%E5%90%88%E5%88%86%E5%B1%82%E8%AE%BE%E8%AE%A1-%E5%8E%9F%E7%90%86%E7%AF%87/&title=基于微前端的前后端结合分层设计(原理篇)" target="_blank" rel="noopener"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=https://amoonkin.github.io/%E5%9F%BA%E4%BA%8E%E5%BE%AE%E5%89%8D%E7%AB%AF%E7%9A%84%E5%89%8D%E5%90%8E%E7%AB%AF%E7%BB%93%E5%90%88%E5%88%86%E5%B1%82%E8%AE%BE%E8%AE%A1-%E5%8E%9F%E7%90%86%E7%AF%87/&title=基于微前端的前后端结合分层设计(原理篇)" target="_blank" rel="noopener"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=https://amoonkin.github.io/%E5%9F%BA%E4%BA%8E%E5%BE%AE%E5%89%8D%E7%AB%AF%E7%9A%84%E5%89%8D%E5%90%8E%E7%AB%AF%E7%BB%93%E5%90%88%E5%88%86%E5%B1%82%E8%AE%BE%E8%AE%A1-%E5%8E%9F%E7%90%86%E7%AF%87/&title=基于微前端的前后端结合分层设计(原理篇)" target="_blank" rel="noopener"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=https://amoonkin.github.io/%E5%9F%BA%E4%BA%8E%E5%BE%AE%E5%89%8D%E7%AB%AF%E7%9A%84%E5%89%8D%E5%90%8E%E7%AB%AF%E7%BB%93%E5%90%88%E5%88%86%E5%B1%82%E8%AE%BE%E8%AE%A1-%E5%8E%9F%E7%90%86%E7%AF%87/&title=基于微前端的前后端结合分层设计(原理篇)" target="_blank" rel="noopener"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=https://amoonkin.github.io/%E5%9F%BA%E4%BA%8E%E5%BE%AE%E5%89%8D%E7%AB%AF%E7%9A%84%E5%89%8D%E5%90%8E%E7%AB%AF%E7%BB%93%E5%90%88%E5%88%86%E5%B1%82%E8%AE%BE%E8%AE%A1-%E5%8E%9F%E7%90%86%E7%AF%87/&name=基于微前端的前后端结合分层设计(原理篇)&description=" target="_blank" rel="noopener"><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://news.ycombinator.com/submitlink?u=https://amoonkin.github.io/%E5%9F%BA%E4%BA%8E%E5%BE%AE%E5%89%8D%E7%AB%AF%E7%9A%84%E5%89%8D%E5%90%8E%E7%AB%AF%E7%BB%93%E5%90%88%E5%88%86%E5%B1%82%E8%AE%BE%E8%AE%A1-%E5%8E%9F%E7%90%86%E7%AF%87/&t=基于微前端的前后端结合分层设计(原理篇)" target="_blank" rel="noopener"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#引入"><span class="toc-number">1.</span> <span class="toc-text">引入</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#什么是微前端"><span class="toc-number">1.1.</span> <span class="toc-text">什么是微前端</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#背景及应用场景"><span class="toc-number">1.2.</span> <span class="toc-text">背景及应用场景</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#行业现状"><span class="toc-number">1.3.</span> <span class="toc-text">行业现状</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#误区"><span class="toc-number">1.4.</span> <span class="toc-text">误区</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#微前端设计原则及意义"><span class="toc-number">2.</span> <span class="toc-text">微前端设计原则及意义</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#优势"><span class="toc-number">2.1.</span> <span class="toc-text">优势</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#原则"><span class="toc-number">2.2.</span> <span class="toc-text">原则</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#开发隔离"><span class="toc-number">2.2.1.</span> <span class="toc-text">开发隔离</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#运行时隔离"><span class="toc-number">2.2.2.</span> <span class="toc-text">运行时隔离</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#“聚散真容易“"><span class="toc-number">2.3.</span> <span class="toc-text">“聚散真容易“</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#微服务划分原则"><span class="toc-number">2.3.1.</span> <span class="toc-text">微服务划分原则</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#实现方式及对比"><span class="toc-number">2.4.</span> <span class="toc-text">实现方式及对比</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#微前端存在的问题"><span class="toc-number">2.5.</span> <span class="toc-text">微前端存在的问题</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#设计理念"><span class="toc-number">2.6.</span> <span class="toc-text">设计理念</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#路由与通信"><span class="toc-number">2.6.1.</span> <span class="toc-text">路由与通信</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#应用版本"><span class="toc-number">2.6.2.</span> <span class="toc-text">应用版本</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#服务发现"><span class="toc-number">2.6.3.</span> <span class="toc-text">服务发现</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#依赖的引入"><span class="toc-number">2.6.4.</span> <span class="toc-text">依赖的引入</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#前后端结合的微前端分层设计"><span class="toc-number">3.</span> <span class="toc-text">前后端结合的微前端分层设计</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#参考资源"><span class="toc-number">4.</span> <span class="toc-text">参考资源</span></a></li></ol>
+    </div>
+  </span>
+</div>
+
+    
+    <div class="content index py4">
+        
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        基于微前端的前后端结合分层设计(原理篇)
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span itemprop="name">aMoonkin</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2020-03-28T04:37:49.000Z" itemprop="datePublished">2020-03-28</time>
+        
+      
+    </div>
+
+
+      
+
+      
+    <div class="article-tag">
+        <i class="fas fa-tag"></i>
+        <a class="tag-link" href="/tags/microfrontends/" rel="tag">microfrontends</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <h2 id="引入"><a href="#引入" class="headerlink" title="引入"></a>引入</h2><h3 id="什么是微前端"><a href="#什么是微前端" class="headerlink" title="什么是微前端"></a>什么是微前端</h3><p><strong>微前端(Micro Frontends)</strong>意指前端的<strong>微服务(Micro Service)</strong>。是一种可独立交付的前端应用程序组成大型整体的架构模式<a href="#参考资源">[1]</a>。简而言之，微前端继承了微服务“拆”的原则，将前端分成多个模块，各个前端模块独立开发测试、独立部署，是实现<strong>大型前端应用</strong>的一种的架构。</p>
+<h3 id="背景及应用场景"><a href="#背景及应用场景" class="headerlink" title="背景及应用场景"></a>背景及应用场景</h3><p>当前，已然不是前端应用天然解耦的时代，由前端框架带来的前端单页应用(<a href="https://en.wikipedia.org/wiki/Single-page_application" target="_blank" rel="noopener">SPA</a>)已经占据了主流。这些框架很好的解决了前端组件化、前后端分离、数据更新等各种各样的问题，但随着应用规模的提升，单页应用变得越来越臃肿，开发效率降低。</p>
+<p>同时，由于单页应用普遍采用单一技术栈，技术栈的更新也成了一个问题。许多团队面对庞大的历史代码，只能望洋兴叹。</p>
+<p>这便是微前端存在的意义：为大型应用在框架带来的便利下重新解耦，提供更多的重构、升级机会。</p>
+<h3 id="行业现状"><a href="#行业现状" class="headerlink" title="行业现状"></a>行业现状</h3><p>参考<a href="https://tech.antfin.com/community/articles/536#QaZfE" target="_blank" rel="noopener">行业现状 by 蚂蚁金服</a></p>
+<h3 id="误区"><a href="#误区" class="headerlink" title="误区"></a>误区</h3><p>架构模式一定要与业务/产品规模相匹配。与微服务等任何一种架构模式相似，微前端不是银弹，仅适用于大规模复杂应用。</p>
+<p>本文所介绍的基于微前端的前后端结合分层设计，结合 SPA 微前端和 MPA 的特点，指出了落地实践中的一些问题并尝试解决。</p>
+<h2 id="微前端设计原则及意义"><a href="#微前端设计原则及意义" class="headerlink" title="微前端设计原则及意义"></a>微前端设计原则及意义</h2><h3 id="优势"><a href="#优势" class="headerlink" title="优势"></a>优势</h3><p>微前端的优势，参考<a href="https://martinfowler.com/articles/micro-frontends.html#Benefits" target="_blank" rel="noopener">Micro Frontends by Cam Jackson</a></p>
+<p>简言之，有以下几点：</p>
+<ol>
+<li><p>高度的灵活性：</p>
+<ul>
+<li>独立开发</li>
+<li>独立部署</li>
+<li>独立升级</li>
+</ul>
+</li>
+<li><p>团队自治：功能团队端到端负责一项功能</p>
+<p> <img src="/images/e2eMicroFrontends.png" alt="e2e"><br> from <a href="#参考资源">[1]</a></p>
+</li>
+</ol>
+<h3 id="原则"><a href="#原则" class="headerlink" title="原则"></a>原则</h3><p>由优势可以引出微前端设计 2 条基本原则：1. 开发隔离，2. 运行时隔离。</p>
+<h4 id="开发隔离"><a href="#开发隔离" class="headerlink" title="开发隔离"></a>开发隔离</h4><ul>
+<li>每个子应用在不同的 git 仓库</li>
+<li>每个子应用有不同的 package.json 和构建工具配置</li>
+<li>每个子应用都可以选择自己的工作流</li>
+</ul>
+<p>部分参考<a href="https://zh-hans.single-spa.js.org/docs/microfrontends-concept" target="_blank" rel="noopener">single-spa 微前端概念</a></p>
+<h4 id="运行时隔离"><a href="#运行时隔离" class="headerlink" title="运行时隔离"></a>运行时隔离</h4><ul>
+<li>每个子应用的技术栈相互隔离，不会互相影响</li>
+</ul>
+<h3 id="“聚散真容易“"><a href="#“聚散真容易“" class="headerlink" title="“聚散真容易“"></a>“聚散真容易“</h3><p>一个框架的设计要求考虑“散”的极端场景，但是“散”是有成本的，一个应用的设计应该考虑哪些东西需要“聚”。框架的设计也应该提供“聚”的能力。</p>
+<p><img src="/images/spectrumMicroFrontends.jpeg" alt="spectrum by Cory House"></p>
+<p>如上图(by <a href="https://twitter.com/housecor" target="_blank" rel="noopener">Cory House</a>) 所示，一个包含多个微前端的团队应该在技术栈，api 设计，公共底层组件和 CI/CD 上达成一致，以获得更高的开发、部署效率。</p>
+<p>除此之外，如脚手架，基座应用等也需要加以考虑。</p>
+<h4 id="微服务划分原则"><a href="#微服务划分原则" class="headerlink" title="微服务划分原则"></a>微服务划分原则</h4><p>微前端与微服务相似，在一个知识边界内划分出来的 service，效率一定是最高的<a href="https://www.bilibili.com/video/BV1u7411j7if" target="_blank" rel="noopener">by Hao Xu, Thoughtworks</a>。</p>
+<p>微服务的划分一定是与业务相关的，在单个微前端内部的团队成员应该对整块业务（前、后、测试、设计等）有全面的认识，也应该对此微服务在应用中的位置和周边相关的业务有一定的认识。</p>
+<h3 id="实现方式及对比"><a href="#实现方式及对比" class="headerlink" title="实现方式及对比"></a>实现方式及对比</h3><p>参考<a href="https://github.com/phodal/microfrontends#%E5%AE%9E%E6%96%BD%E5%BE%AE%E5%89%8D%E7%AB%AF%E7%9A%84%E5%85%AD%E7%A7%8D%E6%96%B9%E5%BC%8F" target="_blank" rel="noopener">实施微前端的六种方式 by phodal</a></p>
+<h3 id="微前端存在的问题"><a href="#微前端存在的问题" class="headerlink" title="微前端存在的问题"></a>微前端存在的问题</h3><p>微前端存在许多问题，蚂蚁金服总结了一套微前端落地实践的解决方案<a href="#参考资源">[5]</a>：</p>
+<p><img src="/images/solutionMicroFrontends.png" alt="解决方案"></p>
+<p>除此之外，微前端带来的问题依然存在：</p>
+<ol>
+<li>产品规模较大带来的性能上的问题，子应用无论多么简单，都需要依托微前端框架</li>
+<li>子应用自治带来的管理上的问题，<ul>
+<li>子应用间的协调</li>
+<li>产品版本与子应用版本的协调</li>
+</ul>
+</li>
+<li>多产品系统的单一产品子应用难以复用，BFF 层与前端层的割裂</li>
+</ol>
+<h3 id="设计理念"><a href="#设计理念" class="headerlink" title="设计理念"></a>设计理念</h3><p>参考<a href="https://github.com/phodal/microfrontends#%E5%BE%AE%E5%89%8D%E7%AB%AF%E7%9A%84%E8%AE%BE%E8%AE%A1%E7%90%86%E5%BF%B5" target="_blank" rel="noopener">微前端的设计理念 by phodal</a></p>
+<p>这里，针对微前端存在的问题，有几点需要补充讨论：一是路由与通信，二是应用版本，三是依赖的引入，四是服务发现。</p>
+<h4 id="路由与通信"><a href="#路由与通信" class="headerlink" title="路由与通信"></a>路由与通信</h4><p>尽管在<a href="https://zh-hans.single-spa.js.org/docs/recommended-setup/#inter-app-communication" target="_blank" rel="noopener">Inter-app communication single-spa</a>提到，A good architecture is one in which microfrontends are decoupled and do not need to frequently communicate. 当许多场景下，必须要实现通信。例如以下场景（仅示意）：</p>
+<p><img src="/images/soundMicroFrontends.png" alt="声音控制器"></p>
+<p>总声音可以控制其余 3 个声音，如果 3 个声音在不同的微服务内，则可以使用通信加以解决。</p>
+<p>在一个 SPA 应用中，前端路由是必须的，但是在 MPA 或者简单应用中则不尽然。可以用通信来代替一部分路由的功能。例如以下场景：</p>
+<p><img src="/images/singleMicroFrontends.png" alt="单页应用"></p>
+<p>在这个页面中，导航栏和搜索栏是单独的微服务，开发者只需要对<code>text</code>部分进行开发，则不需要路由。</p>
+<p>这里你可能要问了，对于这两个例子而言，没有必要使用微前端，是的，但这种场景在现实中的确又存在。当团队决定采用某种技术栈后，团队成员很可能倾向于想当然的使用该技术，因此需要统一知识上下文&amp;制定规范（扯远了。</p>
+<p>路由与通信二者皆可以以插件形式提供。</p>
+<h4 id="应用版本"><a href="#应用版本" class="headerlink" title="应用版本"></a>应用版本</h4><p>管理应用版本可以使用 git 或持续集成所带有的 tag，版本问题主要存在于是否允许多个版本的子应用存在于同一个产品中。咋听起来可能会感觉不允许，但有以下情形：</p>
+<ul>
+<li>子应用灰度升级</li>
+<li>api 变更，对子应用依赖的应用暂未对其适配</li>
+</ul>
+<p>因此，微前端中应提供应用版本控制插件。</p>
+<h4 id="服务发现"><a href="#服务发现" class="headerlink" title="服务发现"></a>服务发现</h4><p>当今主流的微前端框架皆是基于前端服务注册。对于更加复杂的服务，如多产品系统下的单一产品服务，在系统内是无法感知的。如果系统存在 BFF 层的话，仅仅将子应用用注册到前端势必会造成与 BFF 层的割裂，微前端与 BFF 层不是 1 对 1 的，知识边界扩大。</p>
+<p>对于此类复杂系统，微服务框架应该提供服务发现的插件，允许后台对复杂子产品及其子应用进行统一管理。</p>
+<h4 id="依赖的引入"><a href="#依赖的引入" class="headerlink" title="依赖的引入"></a>依赖的引入</h4><p>微前端框架的主代码应该尽可能的精简，将路由、通信、版本控制、服务发现等功能当作插件来处理。保留最基本的子应用标识、前端注册、生命周期功能。</p>
+<h2 id="前后端结合的微前端分层设计"><a href="#前后端结合的微前端分层设计" class="headerlink" title="前后端结合的微前端分层设计"></a>前后端结合的微前端分层设计</h2><p>基于以上种种，对于大型复杂系统，可以采用前后端结合的微前端分层设计。而其依托的微前端框架的设计，将由下一篇继续。</p>
+<h2 id="参考资源"><a href="#参考资源" class="headerlink" title="参考资源"></a>参考资源</h2><ol>
+<li><a href="https://micro-frontends.org/" target="_blank" rel="noopener">Micro Frontends by Michael Geers</a></li>
+<li><a href="https://martinfowler.com/articles/micro-frontends.html" target="_blank" rel="noopener">Micro Frontends by Cam Jackson on Martin Fowler’s website</a></li>
+<li><a href="https://github.com/phodal/microfrontends" target="_blank" rel="noopener">Thinking in Microfrontend by phodal</a></li>
+<li><a href="https://single-spa.js.org/" target="_blank" rel="noopener">sinle-spa</a></li>
+<li><a href="https://github.com/umijs/qiankun" target="_blank" rel="noopener">qiankun</a></li>
+<li><a href="https://tech.meituan.com/2018/09/06/fe-tiny-spa.html" target="_blank" rel="noopener">用微前端的方式搭建类单页应用</a></li>
+<li><a href="https://tech.antfin.com/community/articles/536" target="_blank" rel="noopener">可能是你见过最完善的微前端解决方案</a></li>
+<li><a href="https://zendev.com/2019/06/17/microfrontends-good-bad-ugly.html" target="_blank" rel="noopener">Microfrontends: the good, the bad, and the ugly</a></li>
+</ol>
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">首页</a></li>
+         
+          <li><a href="/about/">关于</a></li>
+         
+          <li><a href="/archives/">归档</a></li>
+         
+          <li><a href="/projects_url">项目</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#引入"><span class="toc-number">1.</span> <span class="toc-text">引入</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#什么是微前端"><span class="toc-number">1.1.</span> <span class="toc-text">什么是微前端</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#背景及应用场景"><span class="toc-number">1.2.</span> <span class="toc-text">背景及应用场景</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#行业现状"><span class="toc-number">1.3.</span> <span class="toc-text">行业现状</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#误区"><span class="toc-number">1.4.</span> <span class="toc-text">误区</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#微前端设计原则及意义"><span class="toc-number">2.</span> <span class="toc-text">微前端设计原则及意义</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#优势"><span class="toc-number">2.1.</span> <span class="toc-text">优势</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#原则"><span class="toc-number">2.2.</span> <span class="toc-text">原则</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#开发隔离"><span class="toc-number">2.2.1.</span> <span class="toc-text">开发隔离</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#运行时隔离"><span class="toc-number">2.2.2.</span> <span class="toc-text">运行时隔离</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#“聚散真容易“"><span class="toc-number">2.3.</span> <span class="toc-text">“聚散真容易“</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#微服务划分原则"><span class="toc-number">2.3.1.</span> <span class="toc-text">微服务划分原则</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#实现方式及对比"><span class="toc-number">2.4.</span> <span class="toc-text">实现方式及对比</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#微前端存在的问题"><span class="toc-number">2.5.</span> <span class="toc-text">微前端存在的问题</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#设计理念"><span class="toc-number">2.6.</span> <span class="toc-text">设计理念</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#路由与通信"><span class="toc-number">2.6.1.</span> <span class="toc-text">路由与通信</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#应用版本"><span class="toc-number">2.6.2.</span> <span class="toc-text">应用版本</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#服务发现"><span class="toc-number">2.6.3.</span> <span class="toc-text">服务发现</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#依赖的引入"><span class="toc-number">2.6.4.</span> <span class="toc-text">依赖的引入</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#前后端结合的微前端分层设计"><span class="toc-number">3.</span> <span class="toc-text">前后端结合的微前端分层设计</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#参考资源"><span class="toc-number">4.</span> <span class="toc-text">参考资源</span></a></li></ol>
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=https://amoonkin.github.io/%E5%9F%BA%E4%BA%8E%E5%BE%AE%E5%89%8D%E7%AB%AF%E7%9A%84%E5%89%8D%E5%90%8E%E7%AB%AF%E7%BB%93%E5%90%88%E5%88%86%E5%B1%82%E8%AE%BE%E8%AE%A1-%E5%8E%9F%E7%90%86%E7%AF%87/" target="_blank" rel="noopener"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=https://amoonkin.github.io/%E5%9F%BA%E4%BA%8E%E5%BE%AE%E5%89%8D%E7%AB%AF%E7%9A%84%E5%89%8D%E5%90%8E%E7%AB%AF%E7%BB%93%E5%90%88%E5%88%86%E5%B1%82%E8%AE%BE%E8%AE%A1-%E5%8E%9F%E7%90%86%E7%AF%87/&text=基于微前端的前后端结合分层设计(原理篇)" target="_blank" rel="noopener"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=https://amoonkin.github.io/%E5%9F%BA%E4%BA%8E%E5%BE%AE%E5%89%8D%E7%AB%AF%E7%9A%84%E5%89%8D%E5%90%8E%E7%AB%AF%E7%BB%93%E5%90%88%E5%88%86%E5%B1%82%E8%AE%BE%E8%AE%A1-%E5%8E%9F%E7%90%86%E7%AF%87/&title=基于微前端的前后端结合分层设计(原理篇)" target="_blank" rel="noopener"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=https://amoonkin.github.io/%E5%9F%BA%E4%BA%8E%E5%BE%AE%E5%89%8D%E7%AB%AF%E7%9A%84%E5%89%8D%E5%90%8E%E7%AB%AF%E7%BB%93%E5%90%88%E5%88%86%E5%B1%82%E8%AE%BE%E8%AE%A1-%E5%8E%9F%E7%90%86%E7%AF%87/&is_video=false&description=基于微前端的前后端结合分层设计(原理篇)" target="_blank" rel="noopener"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=基于微前端的前后端结合分层设计(原理篇)&body=Check out this article: https://amoonkin.github.io/%E5%9F%BA%E4%BA%8E%E5%BE%AE%E5%89%8D%E7%AB%AF%E7%9A%84%E5%89%8D%E5%90%8E%E7%AB%AF%E7%BB%93%E5%90%88%E5%88%86%E5%B1%82%E8%AE%BE%E8%AE%A1-%E5%8E%9F%E7%90%86%E7%AF%87/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=https://amoonkin.github.io/%E5%9F%BA%E4%BA%8E%E5%BE%AE%E5%89%8D%E7%AB%AF%E7%9A%84%E5%89%8D%E5%90%8E%E7%AB%AF%E7%BB%93%E5%90%88%E5%88%86%E5%B1%82%E8%AE%BE%E8%AE%A1-%E5%8E%9F%E7%90%86%E7%AF%87/&title=基于微前端的前后端结合分层设计(原理篇)" target="_blank" rel="noopener"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=https://amoonkin.github.io/%E5%9F%BA%E4%BA%8E%E5%BE%AE%E5%89%8D%E7%AB%AF%E7%9A%84%E5%89%8D%E5%90%8E%E7%AB%AF%E7%BB%93%E5%90%88%E5%88%86%E5%B1%82%E8%AE%BE%E8%AE%A1-%E5%8E%9F%E7%90%86%E7%AF%87/&title=基于微前端的前后端结合分层设计(原理篇)" target="_blank" rel="noopener"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=https://amoonkin.github.io/%E5%9F%BA%E4%BA%8E%E5%BE%AE%E5%89%8D%E7%AB%AF%E7%9A%84%E5%89%8D%E5%90%8E%E7%AB%AF%E7%BB%93%E5%90%88%E5%88%86%E5%B1%82%E8%AE%BE%E8%AE%A1-%E5%8E%9F%E7%90%86%E7%AF%87/&title=基于微前端的前后端结合分层设计(原理篇)" target="_blank" rel="noopener"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=https://amoonkin.github.io/%E5%9F%BA%E4%BA%8E%E5%BE%AE%E5%89%8D%E7%AB%AF%E7%9A%84%E5%89%8D%E5%90%8E%E7%AB%AF%E7%BB%93%E5%90%88%E5%88%86%E5%B1%82%E8%AE%BE%E8%AE%A1-%E5%8E%9F%E7%90%86%E7%AF%87/&title=基于微前端的前后端结合分层设计(原理篇)" target="_blank" rel="noopener"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=https://amoonkin.github.io/%E5%9F%BA%E4%BA%8E%E5%BE%AE%E5%89%8D%E7%AB%AF%E7%9A%84%E5%89%8D%E5%90%8E%E7%AB%AF%E7%BB%93%E5%90%88%E5%88%86%E5%B1%82%E8%AE%BE%E8%AE%A1-%E5%8E%9F%E7%90%86%E7%AF%87/&name=基于微前端的前后端结合分层设计(原理篇)&description=" target="_blank" rel="noopener"><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://news.ycombinator.com/submitlink?u=https://amoonkin.github.io/%E5%9F%BA%E4%BA%8E%E5%BE%AE%E5%89%8D%E7%AB%AF%E7%9A%84%E5%89%8D%E5%90%8E%E7%AB%AF%E7%BB%93%E5%90%88%E5%88%86%E5%B1%82%E8%AE%BE%E8%AE%A1-%E5%8E%9F%E7%90%86%E7%AF%87/&t=基于微前端的前后端结合分层设计(原理篇)" target="_blank" rel="noopener"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> 菜单</a>
+        <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> 目录</a>
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> 分享</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> 返回顶部</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2016-2021
+    aMoonkin
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+         
+          <li><a href="/">首页</a></li>
+         
+          <li><a href="/about/">关于</a></li>
+         
+          <li><a href="/archives/">归档</a></li>
+         
+          <li><a href="/projects_url">项目</a></li>
+        
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+ 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script> 
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script> 
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"复制到粘贴板!\">";
+    btn += '<i class="far fa-clone"></i>';
+    btn += '</span>'; 
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "复制成功!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Google Analytics -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Umami Analytics -->
+
+<!-- Disqus Comments -->
+
+
+</body>
+</html>

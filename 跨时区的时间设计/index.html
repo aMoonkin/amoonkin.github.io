@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="“苹果发布会将于北京时间凌晨1:00举办”，身在国外的我暗自高兴，几个小时时差让我不需要熬夜就可以一探究竟。转眼已经到北京时间凌晨1:00，兴冲冲打开某平台，网页上依然是倒计时：“苹果发布会将于x小时候开始”。没错，他计算的是我本地当前时间到我本地时间1:00之间的时差。那么，这里的时间应该如何计算？不同场景里应该使用哪些时间呢？ 我们拥有哪些时间？为了简单，这里首先假设服务器的时间是当前时区的标">
+<meta property="og:type" content="article">
+<meta property="og:title" content="跨时区的时间设计">
+<meta property="og:url" content="https://amoonkin.github.io/%E8%B7%A8%E6%97%B6%E5%8C%BA%E7%9A%84%E6%97%B6%E9%97%B4%E8%AE%BE%E8%AE%A1/index.html">
+<meta property="og:site_name" content="aMoonkin">
+<meta property="og:description" content="“苹果发布会将于北京时间凌晨1:00举办”，身在国外的我暗自高兴，几个小时时差让我不需要熬夜就可以一探究竟。转眼已经到北京时间凌晨1:00，兴冲冲打开某平台，网页上依然是倒计时：“苹果发布会将于x小时候开始”。没错，他计算的是我本地当前时间到我本地时间1:00之间的时差。那么，这里的时间应该如何计算？不同场景里应该使用哪些时间呢？ 我们拥有哪些时间？为了简单，这里首先假设服务器的时间是当前时区的标">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-10-15T08:55:48.000Z">
+<meta property="article:modified_time" content="2021-05-03T11:21:40.061Z">
+<meta property="article:author" content="aMoonkin">
+<meta property="article:tag" content="javascript frontend developer">
+<meta name="twitter:card" content="summary">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/favicon.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>跨时区的时间设计</title>
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+<meta name="generator" content="Hexo 4.2.1"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" "Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fas fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+         
+          <li><a href="/">首页</a></li>
+         
+          <li><a href="/about/">关于</a></li>
+         
+          <li><a href="/archives/">归档</a></li>
+         
+          <li><a href="/projects_url">项目</a></li>
+        
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="上一篇 " href="/%E7%94%B1%E9%85%8D%E7%BD%AE%E9%97%AE%E9%A2%98%E6%83%B3%E5%88%B0%E7%9A%84/"><i class="fas fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="下一篇 " href="/%E4%B8%80%E4%B8%AA%E4%B8%BAwebsocket%E8%AE%BE%E8%AE%A1%E7%9A%84%E6%B5%8B%E8%AF%95%E5%B7%A5%E5%85%B7/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="返回顶部 " href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="分享文章 " href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">上一篇</span>
+      <span id="i-next" class="info" style="display:none;">下一篇</span>
+      <span id="i-top" class="info" style="display:none;">返回顶部</span>
+      <span id="i-share" class="info" style="display:none;">分享文章</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=https://amoonkin.github.io/%E8%B7%A8%E6%97%B6%E5%8C%BA%E7%9A%84%E6%97%B6%E9%97%B4%E8%AE%BE%E8%AE%A1/" target="_blank" rel="noopener"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=https://amoonkin.github.io/%E8%B7%A8%E6%97%B6%E5%8C%BA%E7%9A%84%E6%97%B6%E9%97%B4%E8%AE%BE%E8%AE%A1/&text=跨时区的时间设计" target="_blank" rel="noopener"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=https://amoonkin.github.io/%E8%B7%A8%E6%97%B6%E5%8C%BA%E7%9A%84%E6%97%B6%E9%97%B4%E8%AE%BE%E8%AE%A1/&title=跨时区的时间设计" target="_blank" rel="noopener"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=https://amoonkin.github.io/%E8%B7%A8%E6%97%B6%E5%8C%BA%E7%9A%84%E6%97%B6%E9%97%B4%E8%AE%BE%E8%AE%A1/&is_video=false&description=跨时区的时间设计" target="_blank" rel="noopener"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=跨时区的时间设计&body=Check out this article: https://amoonkin.github.io/%E8%B7%A8%E6%97%B6%E5%8C%BA%E7%9A%84%E6%97%B6%E9%97%B4%E8%AE%BE%E8%AE%A1/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=https://amoonkin.github.io/%E8%B7%A8%E6%97%B6%E5%8C%BA%E7%9A%84%E6%97%B6%E9%97%B4%E8%AE%BE%E8%AE%A1/&title=跨时区的时间设计" target="_blank" rel="noopener"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=https://amoonkin.github.io/%E8%B7%A8%E6%97%B6%E5%8C%BA%E7%9A%84%E6%97%B6%E9%97%B4%E8%AE%BE%E8%AE%A1/&title=跨时区的时间设计" target="_blank" rel="noopener"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=https://amoonkin.github.io/%E8%B7%A8%E6%97%B6%E5%8C%BA%E7%9A%84%E6%97%B6%E9%97%B4%E8%AE%BE%E8%AE%A1/&title=跨时区的时间设计" target="_blank" rel="noopener"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=https://amoonkin.github.io/%E8%B7%A8%E6%97%B6%E5%8C%BA%E7%9A%84%E6%97%B6%E9%97%B4%E8%AE%BE%E8%AE%A1/&title=跨时区的时间设计" target="_blank" rel="noopener"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=https://amoonkin.github.io/%E8%B7%A8%E6%97%B6%E5%8C%BA%E7%9A%84%E6%97%B6%E9%97%B4%E8%AE%BE%E8%AE%A1/&name=跨时区的时间设计&description=" target="_blank" rel="noopener"><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://news.ycombinator.com/submitlink?u=https://amoonkin.github.io/%E8%B7%A8%E6%97%B6%E5%8C%BA%E7%9A%84%E6%97%B6%E9%97%B4%E8%AE%BE%E8%AE%A1/&t=跨时区的时间设计" target="_blank" rel="noopener"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#我们拥有哪些时间？"><span class="toc-number">1.</span> <span class="toc-text">我们拥有哪些时间？</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#时间戳与时间字符串"><span class="toc-number">1.1.</span> <span class="toc-text">时间戳与时间字符串</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#客户端时间与服务器时间"><span class="toc-number">1.2.</span> <span class="toc-text">客户端时间与服务器时间</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#时间业务场景"><span class="toc-number">2.</span> <span class="toc-text">时间业务场景</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#倒计时（x小时后）"><span class="toc-number">2.1.</span> <span class="toc-text">倒计时（x小时后）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#时间展示"><span class="toc-number">2.2.</span> <span class="toc-text">时间展示</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#x小时前"><span class="toc-number">2.2.1.</span> <span class="toc-text">x小时前</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#时区可变"><span class="toc-number">2.2.2.</span> <span class="toc-text">时区可变</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#夏令时"><span class="toc-number">2.2.3.</span> <span class="toc-text">夏令时</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#时间可变"><span class="toc-number">2.2.4.</span> <span class="toc-text">时间可变</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#结语"><span class="toc-number">3.</span> <span class="toc-text">结语</span></a></li></ol>
+    </div>
+  </span>
+</div>
+
+    
+    <div class="content index py4">
+        
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        跨时区的时间设计
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span itemprop="name">aMoonkin</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2020-10-15T08:55:48.000Z" itemprop="datePublished">2020-10-15</time>
+        
+      
+    </div>
+
+
+      
+
+      
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <p>“苹果发布会将于北京时间凌晨1:00举办”，身在国外的我暗自高兴，几个小时时差让我不需要熬夜就可以一探究竟。转眼已经到北京时间凌晨1:00，兴冲冲打开某平台，网页上依然是倒计时：“苹果发布会将于x小时候开始”。没错，他计算的是我本地当前时间到我本地时间1:00之间的时差。那么，这里的时间应该如何计算？不同场景里应该使用哪些时间呢？</p>
+<h2 id="我们拥有哪些时间？"><a href="#我们拥有哪些时间？" class="headerlink" title="我们拥有哪些时间？"></a>我们拥有哪些时间？</h2><p>为了简单，这里首先假设服务器的时间是当前时区的标准时间（也就是说服务器的时间是“准的”，我们就不需要另外去查询标准时间）。</p>
+<p>作为一款软件应用，我们能直接获取的时间无非三种：</p>
+<ul>
+<li>服务器当前时间</li>
+<li>数据时间（一个既定的时间，包括数据的生成、更新时间，某些约定的时间等）</li>
+<li>客户端当前时间</li>
+</ul>
+<p>再加上服务器时间的时区与客户端时间的时区，我们还可以得到</p>
+<ul>
+<li>客户端所在时区的当前标准时间</li>
+</ul>
+<p>有了这些时间，再加上对业务场景的理解，就组成了时间的设计。但在分析业务场景之前，首先感性的理解一下两个问题：</p>
+<h3 id="时间戳与时间字符串"><a href="#时间戳与时间字符串" class="headerlink" title="时间戳与时间字符串"></a>时间戳与时间字符串</h3><p>时间，会分成时间戳(如 1602775913873)或者各式各样的时间字符串(描述时间的字符串，标准格式可以参见 <a href="https://www.w3.org/TR/NOTE-datetime" target="_blank" rel="noopener">w3c Date and Time Formats</a>等)，在实际的操作中，可以理解为时间戳是时区不相关的而时间字符串是时区相关的。而大部分由于时区产生的时间问题，都是错误的使用了时间字符串。</p>
+<h3 id="客户端时间与服务器时间"><a href="#客户端时间与服务器时间" class="headerlink" title="客户端时间与服务器时间"></a>客户端时间与服务器时间</h3><p>不要相信客户端时间，但可以使用客户端时间为用户提供便利。</p>
+<h2 id="时间业务场景"><a href="#时间业务场景" class="headerlink" title="时间业务场景"></a>时间业务场景</h2><h3 id="倒计时（x小时后）"><a href="#倒计时（x小时后）" class="headerlink" title="倒计时（x小时后）"></a>倒计时（x小时后）</h3><p>倒计时实际分为两种，一种是大家约定好，在某个时间做某件事，如直播开始，抢购开始等，这是一种很简单的情形，因为倒计时是两个时间的差值，完全不涉及时区，这种倒计时计算的是一个“死”的时间，也不涉及用户“个人”的时间。本质上是“我”决定了一件事，一切安排都听“我”的。所以这里的倒计时说到底是服务器的倒计时：</p>
+<p><code>倒计时结束的数据时间时间戳 - 服务器当前时间/标准时间时间戳</code></p>
+<p>如果追求准确，可以每隔0.5s向服务器发送一个请求，让服务器告诉你究竟还剩下多少时间。当然，在实际操作中，一个此类倒计时是可以放在前端的，前端拿着服务器发来的一个差值（或者服务器当前时间时间戳和数据时间时间戳），不断在前端做减法。</p>
+<p>还有一种是约定在一定时间做完某件事，如考试答题需要在1小时内完成等。这种场景看似也是一个差值，一样可以用服务器时间差值来解决，但需要考虑此倒计时到底是约束作用还是提示作用：假如是一个在线考试系统，1个小时之内必须做完，或者软件的试用期为30天，那这是约束。假如是一个离线的小管家应用，用户每玩30分钟电脑，就要提醒他该休息了，这是提示作用。二者的区别就在于是否使用客户端时间。</p>
+<p>第一种情形，超过1小时之后，就应该停止考试，那如果用户改变了本地时间，就意味着他可以无限期考试，这显然是不合理的。因此，在考试开始前，就应该有一个请求发送到服务器，说用户开始了。此时服务器记录下这个请求接收到那一刻的服务器时间（数据时间1）（不要相信客户端时间），服务器也知道，用户的考试时长（数据时间2），客户端请求这个时间，做减法即可，服务器在倒计时结束后有相应的操作。第二种情形就可以直接使用客户端的时间。</p>
+<h3 id="时间展示"><a href="#时间展示" class="headerlink" title="时间展示"></a>时间展示</h3><p>时间的展示一般是某些数据的时间展示，如微博信息流的时间、邮箱里邮件的发送接收时间、订单生成时间等。在没有时区的情况下，完全可以由服务端生成好时间字符串，但存在时区，就需要思考，这个时间究竟应该如何展示：展示服务器时间则需要检测客户端时区给用户相应的提示，或者展示客户端时间？或者还有一些别的要素会影响到时间的展示？</p>
+<h4 id="x小时前"><a href="#x小时前" class="headerlink" title="x小时前"></a>x小时前</h4><p>在一些应用中的日期展示，分为短期时间和长期时间，短期时间通常使用<code>x小时前</code>的形式表示。这种时间差的形式也应该是无关时区的，直接用服务器时间戳的差值计算即可。或者，为了减少服务器压力，也可以拿到服务器的时间戳，在客户端做差值，长期时间使用这个时间戳在前端转换成完整的时间。而这个长期时间也有两种情况：时间是否与时区关联。比如：某健身的应用，张三在北京时间下午3点记录，”我跑步了“，李四在英国下午2点去看张三的健身记录，写着下午3点，“我跑步了”，这似乎没有什么问题。但如果是个朋友圈应用，张三在北京时间下午3点发朋友圈，李四在英国下午2点应该显示什么呢？这可能是一个时间是给别人看的还是给自己看的问题。</p>
+<h4 id="时区可变"><a href="#时区可变" class="headerlink" title="时区可变"></a>时区可变</h4><p>在某些场景下，是允许用户改变时区的，如对于某些监控、报表系统，用户可以自行设置时区。这里的关键点是思考设置时区的目的是什么。对于私人账户或者一些to C应用的账户，这里的时区更倾向于是用户想要看到的时间。而对于多人账户或者某些to B应用的账户，时区更可能是设置的系统时间，也就是用户希望的服务器内的时间。比如，对于某次监控警告，某监控系统的服务器时间为<code>t1</code>，设置的时区时间<code>t2</code>，客户本地时间<code>t3</code>。<code>t1</code>, <code>t2</code>, <code>t3</code>是同一时间戳下不同时区的时间。用户在3小时后，看到<code>t</code>时间有报警，那么这个<code>t</code>应该是<code>t1</code>, <code>t2</code>还是<code>t3</code>呢？</p>
+<p>考虑与<a href="#x小时前">x小时前</a>的一致（即假设系统设置3小时内用<code>x小时前</code>的形式展示，3小时外用完整时间展示），不会出现在下午2点，既看到<code>2小时前</code>的报警，又看到<code>下午1点</code>的报警，应该都是使用<code>客户端当前时间/客户端所在时区的当前标准时间</code>作为标准。这里的目的是用差值帮助用户计算时间。至于给用户之间的交流带来的麻烦，如A，B不在同一时区，A告诉B，10天前，下午三点有个报警这种情况，1. B可以自行计算，2. 除了三点这个信息，可能25分16秒更方便寻找。</p>
+<p>既然使用<code>t3</code>，那<code>t2</code>存在的意义是什么呢？在使用仅以年月日计算的时间时，或以某个时间作为某些操作的触发时间时，使用<code>t2</code>更为合适。如C用户设置每月1号备份数据库，或者每年1月1日生成报表。由于用户在不同时区，且操作/报表内容应该一致，这里的备份时间和报表内的数据包含的时间，应该以<code>t2</code>为准。</p>
+<p>那么，假设D用户，设置每天12点备份数据库，且备份数据库会触发告警呢？如果按照<code>t2</code>时区所在的时间，用户收到的可能是<code>t3 - t2</code>时间的告警。我觉得此类场景无解，应该给用户相应的提醒。</p>
+<h4 id="夏令时"><a href="#夏令时" class="headerlink" title="夏令时"></a>夏令时</h4><p>夏令时的问题是，用户总能经历两段相同的时间。对于一定要使用时间字符串的应用，是一件痛苦的事。比如，某地冬令时，在2:00将时间回调到1:00，一个设定在1:30的定时任务，1. 是否要执行两遍？2. 按照时间间隔执行（按照时间戳，每24小时执行，第一次执行完，下一次执行在第二天的0:30）还是按照每天1:30执行？</p>
+<p>个人感觉无论是在实现逻辑还是在用户逻辑，按照时间戳执行是更好的方案。但要相应的提醒用户夏令时带来的改变。</p>
+<h4 id="时间可变"><a href="#时间可变" class="headerlink" title="时间可变"></a>时间可变</h4><p>我还真想不到，什么应用提倡时间可变的。想到再写吧。</p>
+<h2 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h2><p>文章主要讨论了一些场景下，可能由时区带来时间的问题的设计方案。一条很基本的原则是，尽量使用时间戳来处理时间，对于时间戳不能处理的，要根据业务场景因地制宜，再佐以提示。其实在国外这几个月，在日常使用国内知名应用中，已经遇到了很多时间上的简单问题，而且也没有遇到一个应用可以明确自己的时间逻辑，甚是遗憾。</p>
+<p>时间、国际化、可访问性都是一个成熟的软件不可或缺的部分，希望业界可以有更多的实践与更完善的标准。</p>
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">首页</a></li>
+         
+          <li><a href="/about/">关于</a></li>
+         
+          <li><a href="/archives/">归档</a></li>
+         
+          <li><a href="/projects_url">项目</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#我们拥有哪些时间？"><span class="toc-number">1.</span> <span class="toc-text">我们拥有哪些时间？</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#时间戳与时间字符串"><span class="toc-number">1.1.</span> <span class="toc-text">时间戳与时间字符串</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#客户端时间与服务器时间"><span class="toc-number">1.2.</span> <span class="toc-text">客户端时间与服务器时间</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#时间业务场景"><span class="toc-number">2.</span> <span class="toc-text">时间业务场景</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#倒计时（x小时后）"><span class="toc-number">2.1.</span> <span class="toc-text">倒计时（x小时后）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#时间展示"><span class="toc-number">2.2.</span> <span class="toc-text">时间展示</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#x小时前"><span class="toc-number">2.2.1.</span> <span class="toc-text">x小时前</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#时区可变"><span class="toc-number">2.2.2.</span> <span class="toc-text">时区可变</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#夏令时"><span class="toc-number">2.2.3.</span> <span class="toc-text">夏令时</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#时间可变"><span class="toc-number">2.2.4.</span> <span class="toc-text">时间可变</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#结语"><span class="toc-number">3.</span> <span class="toc-text">结语</span></a></li></ol>
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=https://amoonkin.github.io/%E8%B7%A8%E6%97%B6%E5%8C%BA%E7%9A%84%E6%97%B6%E9%97%B4%E8%AE%BE%E8%AE%A1/" target="_blank" rel="noopener"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=https://amoonkin.github.io/%E8%B7%A8%E6%97%B6%E5%8C%BA%E7%9A%84%E6%97%B6%E9%97%B4%E8%AE%BE%E8%AE%A1/&text=跨时区的时间设计" target="_blank" rel="noopener"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=https://amoonkin.github.io/%E8%B7%A8%E6%97%B6%E5%8C%BA%E7%9A%84%E6%97%B6%E9%97%B4%E8%AE%BE%E8%AE%A1/&title=跨时区的时间设计" target="_blank" rel="noopener"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=https://amoonkin.github.io/%E8%B7%A8%E6%97%B6%E5%8C%BA%E7%9A%84%E6%97%B6%E9%97%B4%E8%AE%BE%E8%AE%A1/&is_video=false&description=跨时区的时间设计" target="_blank" rel="noopener"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=跨时区的时间设计&body=Check out this article: https://amoonkin.github.io/%E8%B7%A8%E6%97%B6%E5%8C%BA%E7%9A%84%E6%97%B6%E9%97%B4%E8%AE%BE%E8%AE%A1/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=https://amoonkin.github.io/%E8%B7%A8%E6%97%B6%E5%8C%BA%E7%9A%84%E6%97%B6%E9%97%B4%E8%AE%BE%E8%AE%A1/&title=跨时区的时间设计" target="_blank" rel="noopener"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=https://amoonkin.github.io/%E8%B7%A8%E6%97%B6%E5%8C%BA%E7%9A%84%E6%97%B6%E9%97%B4%E8%AE%BE%E8%AE%A1/&title=跨时区的时间设计" target="_blank" rel="noopener"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=https://amoonkin.github.io/%E8%B7%A8%E6%97%B6%E5%8C%BA%E7%9A%84%E6%97%B6%E9%97%B4%E8%AE%BE%E8%AE%A1/&title=跨时区的时间设计" target="_blank" rel="noopener"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=https://amoonkin.github.io/%E8%B7%A8%E6%97%B6%E5%8C%BA%E7%9A%84%E6%97%B6%E9%97%B4%E8%AE%BE%E8%AE%A1/&title=跨时区的时间设计" target="_blank" rel="noopener"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=https://amoonkin.github.io/%E8%B7%A8%E6%97%B6%E5%8C%BA%E7%9A%84%E6%97%B6%E9%97%B4%E8%AE%BE%E8%AE%A1/&name=跨时区的时间设计&description=" target="_blank" rel="noopener"><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://news.ycombinator.com/submitlink?u=https://amoonkin.github.io/%E8%B7%A8%E6%97%B6%E5%8C%BA%E7%9A%84%E6%97%B6%E9%97%B4%E8%AE%BE%E8%AE%A1/&t=跨时区的时间设计" target="_blank" rel="noopener"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> 菜单</a>
+        <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> 目录</a>
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> 分享</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> 返回顶部</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2016-2021
+    aMoonkin
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+         
+          <li><a href="/">首页</a></li>
+         
+          <li><a href="/about/">关于</a></li>
+         
+          <li><a href="/archives/">归档</a></li>
+         
+          <li><a href="/projects_url">项目</a></li>
+        
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+ 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script> 
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script> 
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"复制到粘贴板!\">";
+    btn += '<i class="far fa-clone"></i>';
+    btn += '</span>'; 
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "复制成功!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Google Analytics -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Umami Analytics -->
+
+<!-- Disqus Comments -->
+
+
+</body>
+</html>

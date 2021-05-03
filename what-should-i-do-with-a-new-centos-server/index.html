@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="add my own user12adduser USERNAMEpasswd USERNAME  add user to sudoers1vim &#x2F;etc&#x2F;sudoers  add USERNAME ALL&#x3D;(ALL) ALL just belowroot ALL&#x3D;(ALL) ALL switch user1su USERNAME  (if you’re in China) change the">
+<meta property="og:type" content="article">
+<meta property="og:title" content="What would I do with a new CentOS server">
+<meta property="og:url" content="https://amoonkin.github.io/what-should-i-do-with-a-new-centos-server/index.html">
+<meta property="og:site_name" content="aMoonkin">
+<meta property="og:description" content="add my own user12adduser USERNAMEpasswd USERNAME  add user to sudoers1vim &#x2F;etc&#x2F;sudoers  add USERNAME ALL&#x3D;(ALL) ALL just belowroot ALL&#x3D;(ALL) ALL switch user1su USERNAME  (if you’re in China) change the">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2017-11-01T08:21:35.000Z">
+<meta property="article:modified_time" content="2017-12-22T03:08:43.000Z">
+<meta property="article:author" content="aMoonkin">
+<meta property="article:tag" content="javascript frontend developer">
+<meta name="twitter:card" content="summary">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/favicon.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>What would I do with a new CentOS server</title>
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+<meta name="generator" content="Hexo 4.2.1"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" "Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fas fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+         
+          <li><a href="/">首页</a></li>
+         
+          <li><a href="/about/">关于</a></li>
+         
+          <li><a href="/archives/">归档</a></li>
+         
+          <li><a href="/projects_url">项目</a></li>
+        
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="上一篇 " href="/something-about-border-radius/"><i class="fas fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="下一篇 " href="/whats-map-doing/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="返回顶部 " href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="分享文章 " href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">上一篇</span>
+      <span id="i-next" class="info" style="display:none;">下一篇</span>
+      <span id="i-top" class="info" style="display:none;">返回顶部</span>
+      <span id="i-share" class="info" style="display:none;">分享文章</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=https://amoonkin.github.io/what-should-i-do-with-a-new-centos-server/" target="_blank" rel="noopener"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=https://amoonkin.github.io/what-should-i-do-with-a-new-centos-server/&text=What would I do with a new CentOS server" target="_blank" rel="noopener"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=https://amoonkin.github.io/what-should-i-do-with-a-new-centos-server/&title=What would I do with a new CentOS server" target="_blank" rel="noopener"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=https://amoonkin.github.io/what-should-i-do-with-a-new-centos-server/&is_video=false&description=What would I do with a new CentOS server" target="_blank" rel="noopener"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=What would I do with a new CentOS server&body=Check out this article: https://amoonkin.github.io/what-should-i-do-with-a-new-centos-server/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=https://amoonkin.github.io/what-should-i-do-with-a-new-centos-server/&title=What would I do with a new CentOS server" target="_blank" rel="noopener"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=https://amoonkin.github.io/what-should-i-do-with-a-new-centos-server/&title=What would I do with a new CentOS server" target="_blank" rel="noopener"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=https://amoonkin.github.io/what-should-i-do-with-a-new-centos-server/&title=What would I do with a new CentOS server" target="_blank" rel="noopener"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=https://amoonkin.github.io/what-should-i-do-with-a-new-centos-server/&title=What would I do with a new CentOS server" target="_blank" rel="noopener"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=https://amoonkin.github.io/what-should-i-do-with-a-new-centos-server/&name=What would I do with a new CentOS server&description=" target="_blank" rel="noopener"><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://news.ycombinator.com/submitlink?u=https://amoonkin.github.io/what-should-i-do-with-a-new-centos-server/&t=What would I do with a new CentOS server" target="_blank" rel="noopener"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#add-my-own-user"><span class="toc-number">1.</span> <span class="toc-text">add my own user</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#add-user-to-sudoers"><span class="toc-number">2.</span> <span class="toc-text">add user to sudoers</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#switch-user"><span class="toc-number">3.</span> <span class="toc-text">switch user</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#if-you’re-in-China-change-the-source"><span class="toc-number">4.</span> <span class="toc-text">(if you’re in China) change the source</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#install-build-essencials"><span class="toc-number">5.</span> <span class="toc-text">install build essencials</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#install-zsh-and-oh-my-zsh"><span class="toc-number">6.</span> <span class="toc-text">install zsh and oh-my-zsh</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#in-case-drop-out"><span class="toc-number">7.</span> <span class="toc-text">in case drop out</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#install-nvm"><span class="toc-number">8.</span> <span class="toc-text">install nvm</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#install-global-node-modules"><span class="toc-number">9.</span> <span class="toc-text">install global node modules</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#when-switch-to-other-sh-I-would"><span class="toc-number">10.</span> <span class="toc-text">when switch to other sh, I would</span></a></li></ol>
+    </div>
+  </span>
+</div>
+
+    
+    <div class="content index py4">
+        
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        What would I do with a new CentOS server
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span itemprop="name">aMoonkin</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2017-11-01T08:21:35.000Z" itemprop="datePublished">2017-11-01</time>
+        
+      
+    </div>
+
+
+      
+
+      
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <h3 id="add-my-own-user"><a href="#add-my-own-user" class="headerlink" title="add my own user"></a>add my own user</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">adduser USERNAME</span><br><span class="line">passwd USERNAME</span><br></pre></td></tr></table></figure>
+
+<h3 id="add-user-to-sudoers"><a href="#add-user-to-sudoers" class="headerlink" title="add user to sudoers"></a>add user to sudoers</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vim /etc/sudoers</span><br></pre></td></tr></table></figure>
+
+<p>add <code>USERNAME ALL=(ALL) ALL</code> just below<code>root ALL=(ALL) ALL</code></p>
+<h3 id="switch-user"><a href="#switch-user" class="headerlink" title="switch user"></a>switch user</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">su USERNAME</span><br></pre></td></tr></table></figure>
+
+<h3 id="if-you’re-in-China-change-the-source"><a href="#if-you’re-in-China-change-the-source" class="headerlink" title="(if you’re in China) change the source"></a>(if you’re in China) change the source</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">mv /etc/yum.repos.d/CentOS-Base.repo /etc/yum.repos.d/CentOS-Base.repo.bak</span><br><span class="line">wget -O /etc/yum.repos.d/CentOS-Base.repo http://mirrors.aliyun.com/repo/Centos-7.repo</span><br><span class="line">yum makecache</span><br></pre></td></tr></table></figure>
+
+<h3 id="install-build-essencials"><a href="#install-build-essencials" class="headerlink" title="install build essencials"></a>install build essencials</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo yum -y groupinstall <span class="string">"Development Tools"</span> <span class="comment"># -y means 'yes'</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="install-zsh-and-oh-my-zsh"><a href="#install-zsh-and-oh-my-zsh" class="headerlink" title="install zsh and oh-my-zsh"></a>install zsh and oh-my-zsh</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo yum -y install zsh</span><br><span class="line">sh -c <span class="string">"<span class="variable">$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh)</span>"</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="in-case-drop-out"><a href="#in-case-drop-out" class="headerlink" title="in case drop out"></a>in case drop out</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vim /etc/ssh/sshd_config</span><br></pre></td></tr></table></figure>
+
+<p>find lines below:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ClientAliveInterval 0</span><br><span class="line">ClientAliveCountMax 3</span><br></pre></td></tr></table></figure>
+
+<p>uncomment and change:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ClientAliveInterval 30</span><br><span class="line">ClientAliveCountMax 86400</span><br></pre></td></tr></table></figure>
+
+<p>and restart the service:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">service sshd restart</span><br></pre></td></tr></table></figure>
+
+<h3 id="install-nvm"><a href="#install-nvm" class="headerlink" title="install nvm"></a>install nvm</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.6/install.sh | bash</span><br><span class="line">nvm install --lts</span><br><span class="line">npm install -g yarn</span><br></pre></td></tr></table></figure>
+
+<h3 id="install-global-node-modules"><a href="#install-global-node-modules" class="headerlink" title="install global node modules"></a>install global node modules</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yarn global add vue-cli @angular/cli typescript http-server gulp webpack</span><br></pre></td></tr></table></figure>
+
+<p>in China, you may change the source into Taobao’s</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yarn config <span class="built_in">set</span> registry https://registry.npm.taobao.org</span><br></pre></td></tr></table></figure>
+
+<h3 id="when-switch-to-other-sh-I-would"><a href="#when-switch-to-other-sh-I-would" class="headerlink" title="when switch to other sh, I would"></a>when switch to other <code>sh</code>, I would</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vim ~/.bashrc</span><br></pre></td></tr></table></figure>
+
+<p>in vim, add</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">export</span> PATH=/home/dmf/.yarn/bin:<span class="variable">$PATH</span></span><br></pre></td></tr></table></figure>
+
+<p>In case grub is down, and start with gurb rescue,</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">grub rescue&gt;ls</span><br></pre></td></tr></table></figure>
+
+<p>for each listed below, try <code>ls</code> it.<br>for example, <code>ls (hd0, msdos3)</code> or <code>ls (hd0, gpt5)</code>, until the output is not <code>filesystem error</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">grub rescue &gt;root&#x3D;(hdx,msdosx)</span><br><span class="line">grub rescue &gt;prefix&#x3D;(hdx,msdosx)&#x2F;boot&#x2F;grub</span><br><span class="line">grub rescue &gt;insmod normal</span><br><span class="line">grub rescue &gt;normal</span><br></pre></td></tr></table></figure>
+
+<p>then restart the computer<br>in terminal input</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo grub-install &#x2F;dev&#x2F;sda</span><br><span class="line">sudo grub-mkconfig -o &#x2F;boot&#x2F;grub&#x2F;grub.cfg</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">-&#96;</span><br><span class="line">                  .o+&#96;</span><br><span class="line">                 &#96;ooo&#x2F;</span><br><span class="line">                &#96;+oooo:</span><br><span class="line">               &#96;+oooooo:</span><br><span class="line">               -+oooooo+:</span><br><span class="line">             &#96;&#x2F;:-:++oooo+:</span><br><span class="line">            &#96;&#x2F;++++&#x2F;+++++++:</span><br><span class="line">           &#96;&#x2F;++++++++++++++:</span><br><span class="line">          &#96;&#x2F;+++ooooooooooooo&#x2F;&#96;</span><br><span class="line">         .&#x2F;ooosssso++osssssso+&#96;</span><br><span class="line">        .oossssso-&#96;&#96;&#96;&#96;&#x2F;ossssss+&#96;</span><br><span class="line">       -osssssso.      :ssssssso.</span><br><span class="line">      :osssssss&#x2F;        osssso+++.</span><br><span class="line">     &#x2F;ossssssss&#x2F;        +ssssooo&#x2F;-</span><br><span class="line">   &#96;&#x2F;ossssso+&#x2F;:-        -:&#x2F;+osssso+-</span><br><span class="line">  &#96;+sso+:-&#96;                 &#96;.-&#x2F;+oso:</span><br><span class="line"> &#96;++:.                           &#96;-&#x2F;+&#x2F;</span><br><span class="line"> .&#96;                                 &#96;&#x2F;</span><br></pre></td></tr></table></figure>
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">首页</a></li>
+         
+          <li><a href="/about/">关于</a></li>
+         
+          <li><a href="/archives/">归档</a></li>
+         
+          <li><a href="/projects_url">项目</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#add-my-own-user"><span class="toc-number">1.</span> <span class="toc-text">add my own user</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#add-user-to-sudoers"><span class="toc-number">2.</span> <span class="toc-text">add user to sudoers</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#switch-user"><span class="toc-number">3.</span> <span class="toc-text">switch user</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#if-you’re-in-China-change-the-source"><span class="toc-number">4.</span> <span class="toc-text">(if you’re in China) change the source</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#install-build-essencials"><span class="toc-number">5.</span> <span class="toc-text">install build essencials</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#install-zsh-and-oh-my-zsh"><span class="toc-number">6.</span> <span class="toc-text">install zsh and oh-my-zsh</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#in-case-drop-out"><span class="toc-number">7.</span> <span class="toc-text">in case drop out</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#install-nvm"><span class="toc-number">8.</span> <span class="toc-text">install nvm</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#install-global-node-modules"><span class="toc-number">9.</span> <span class="toc-text">install global node modules</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#when-switch-to-other-sh-I-would"><span class="toc-number">10.</span> <span class="toc-text">when switch to other sh, I would</span></a></li></ol>
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=https://amoonkin.github.io/what-should-i-do-with-a-new-centos-server/" target="_blank" rel="noopener"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=https://amoonkin.github.io/what-should-i-do-with-a-new-centos-server/&text=What would I do with a new CentOS server" target="_blank" rel="noopener"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=https://amoonkin.github.io/what-should-i-do-with-a-new-centos-server/&title=What would I do with a new CentOS server" target="_blank" rel="noopener"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=https://amoonkin.github.io/what-should-i-do-with-a-new-centos-server/&is_video=false&description=What would I do with a new CentOS server" target="_blank" rel="noopener"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=What would I do with a new CentOS server&body=Check out this article: https://amoonkin.github.io/what-should-i-do-with-a-new-centos-server/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=https://amoonkin.github.io/what-should-i-do-with-a-new-centos-server/&title=What would I do with a new CentOS server" target="_blank" rel="noopener"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=https://amoonkin.github.io/what-should-i-do-with-a-new-centos-server/&title=What would I do with a new CentOS server" target="_blank" rel="noopener"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=https://amoonkin.github.io/what-should-i-do-with-a-new-centos-server/&title=What would I do with a new CentOS server" target="_blank" rel="noopener"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=https://amoonkin.github.io/what-should-i-do-with-a-new-centos-server/&title=What would I do with a new CentOS server" target="_blank" rel="noopener"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=https://amoonkin.github.io/what-should-i-do-with-a-new-centos-server/&name=What would I do with a new CentOS server&description=" target="_blank" rel="noopener"><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://news.ycombinator.com/submitlink?u=https://amoonkin.github.io/what-should-i-do-with-a-new-centos-server/&t=What would I do with a new CentOS server" target="_blank" rel="noopener"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> 菜单</a>
+        <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> 目录</a>
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> 分享</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> 返回顶部</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2016-2021
+    aMoonkin
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+         
+          <li><a href="/">首页</a></li>
+         
+          <li><a href="/about/">关于</a></li>
+         
+          <li><a href="/archives/">归档</a></li>
+         
+          <li><a href="/projects_url">项目</a></li>
+        
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+ 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script> 
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script> 
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"复制到粘贴板!\">";
+    btn += '<i class="far fa-clone"></i>';
+    btn += '</span>'; 
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "复制成功!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Google Analytics -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Umami Analytics -->
+
+<!-- Disqus Comments -->
+
+
+</body>
+</html>

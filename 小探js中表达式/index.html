@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="由++(自增操作符)引发的思考最近发现了太多需要记忆的东西，深感自己失去了思考能力，昨夜在聊天发送微博辣鸡++++++++++后，突发奇想，在控制台里敲下以下代码： 12let a &#x3D; 1;a++++;   Uncaught SyntaxError: Unexpected token &#39;++&#39;  看起来编译器并没有理解我的意图，那么再规范化一下： 12let a &#x3D; 1;(a++)">
+<meta property="og:type" content="article">
+<meta property="og:title" content="小探js中表达式">
+<meta property="og:url" content="https://amoonkin.github.io/%E5%B0%8F%E6%8E%A2js%E4%B8%AD%E8%A1%A8%E8%BE%BE%E5%BC%8F/index.html">
+<meta property="og:site_name" content="aMoonkin">
+<meta property="og:description" content="由++(自增操作符)引发的思考最近发现了太多需要记忆的东西，深感自己失去了思考能力，昨夜在聊天发送微博辣鸡++++++++++后，突发奇想，在控制台里敲下以下代码： 12let a &#x3D; 1;a++++;   Uncaught SyntaxError: Unexpected token &#39;++&#39;  看起来编译器并没有理解我的意图，那么再规范化一下： 12let a &#x3D; 1;(a++)">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://amoonkin.github.io/images/IsValidSimpleAssignmentTarget.png">
+<meta property="article:published_time" content="2020-03-23T15:28:23.000Z">
+<meta property="article:modified_time" content="2021-05-03T11:21:40.061Z">
+<meta property="article:author" content="aMoonkin">
+<meta property="article:tag" content="javascript">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://amoonkin.github.io/images/IsValidSimpleAssignmentTarget.png">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/images/favicon.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>小探js中表达式</title>
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+<meta name="generator" content="Hexo 4.2.1"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" "Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fas fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+         
+          <li><a href="/">首页</a></li>
+         
+          <li><a href="/about/">关于</a></li>
+         
+          <li><a href="/archives/">归档</a></li>
+         
+          <li><a href="/projects_url">项目</a></li>
+        
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="上一篇 " href="/%E5%9F%BA%E4%BA%8E%E5%BE%AE%E5%89%8D%E7%AB%AF%E7%9A%84%E5%89%8D%E5%90%8E%E7%AB%AF%E7%BB%93%E5%90%88%E5%88%86%E5%B1%82%E8%AE%BE%E8%AE%A1-%E5%8E%9F%E7%90%86%E7%AF%87/"><i class="fas fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="下一篇 " href="/macOS-introduce/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="返回顶部 " href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="分享文章 " href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">上一篇</span>
+      <span id="i-next" class="info" style="display:none;">下一篇</span>
+      <span id="i-top" class="info" style="display:none;">返回顶部</span>
+      <span id="i-share" class="info" style="display:none;">分享文章</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=https://amoonkin.github.io/%E5%B0%8F%E6%8E%A2js%E4%B8%AD%E8%A1%A8%E8%BE%BE%E5%BC%8F/" target="_blank" rel="noopener"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=https://amoonkin.github.io/%E5%B0%8F%E6%8E%A2js%E4%B8%AD%E8%A1%A8%E8%BE%BE%E5%BC%8F/&text=小探js中表达式" target="_blank" rel="noopener"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=https://amoonkin.github.io/%E5%B0%8F%E6%8E%A2js%E4%B8%AD%E8%A1%A8%E8%BE%BE%E5%BC%8F/&title=小探js中表达式" target="_blank" rel="noopener"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=https://amoonkin.github.io/%E5%B0%8F%E6%8E%A2js%E4%B8%AD%E8%A1%A8%E8%BE%BE%E5%BC%8F/&is_video=false&description=小探js中表达式" target="_blank" rel="noopener"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=小探js中表达式&body=Check out this article: https://amoonkin.github.io/%E5%B0%8F%E6%8E%A2js%E4%B8%AD%E8%A1%A8%E8%BE%BE%E5%BC%8F/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=https://amoonkin.github.io/%E5%B0%8F%E6%8E%A2js%E4%B8%AD%E8%A1%A8%E8%BE%BE%E5%BC%8F/&title=小探js中表达式" target="_blank" rel="noopener"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=https://amoonkin.github.io/%E5%B0%8F%E6%8E%A2js%E4%B8%AD%E8%A1%A8%E8%BE%BE%E5%BC%8F/&title=小探js中表达式" target="_blank" rel="noopener"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=https://amoonkin.github.io/%E5%B0%8F%E6%8E%A2js%E4%B8%AD%E8%A1%A8%E8%BE%BE%E5%BC%8F/&title=小探js中表达式" target="_blank" rel="noopener"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=https://amoonkin.github.io/%E5%B0%8F%E6%8E%A2js%E4%B8%AD%E8%A1%A8%E8%BE%BE%E5%BC%8F/&title=小探js中表达式" target="_blank" rel="noopener"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=https://amoonkin.github.io/%E5%B0%8F%E6%8E%A2js%E4%B8%AD%E8%A1%A8%E8%BE%BE%E5%BC%8F/&name=小探js中表达式&description=" target="_blank" rel="noopener"><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://news.ycombinator.com/submitlink?u=https://amoonkin.github.io/%E5%B0%8F%E6%8E%A2js%E4%B8%AD%E8%A1%A8%E8%BE%BE%E5%BC%8F/&t=小探js中表达式" target="_blank" rel="noopener"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#由-自增操作符-引发的思考"><span class="toc-number">1.</span> <span class="toc-text">由++(自增操作符)引发的思考</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#postfix-操作符"><span class="toc-number">1.1.</span> <span class="toc-text">postfix++操作符</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#表达式-Expression"><span class="toc-number">1.2.</span> <span class="toc-text">表达式(Expression)</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#引用？"><span class="toc-number">1.2.1.</span> <span class="toc-text">引用？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#LeftHandSideExpression"><span class="toc-number">1.2.2.</span> <span class="toc-text">LeftHandSideExpression</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#postfix-prefix-操作符是糟粕？"><span class="toc-number">1.3.</span> <span class="toc-text">postfix&#x2F;prefix 操作符是糟粕？</span></a></li></ol></li></ol>
+    </div>
+  </span>
+</div>
+
+    
+    <div class="content index py4">
+        
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        小探js中表达式
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span itemprop="name">aMoonkin</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2020-03-23T15:28:23.000Z" itemprop="datePublished">2020-03-23</time>
+        
+      
+    </div>
+
+
+      
+
+      
+    <div class="article-tag">
+        <i class="fas fa-tag"></i>
+        <a class="tag-link" href="/tags/javascript/" rel="tag">javascript</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <h1 id="由-自增操作符-引发的思考"><a href="#由-自增操作符-引发的思考" class="headerlink" title="由++(自增操作符)引发的思考"></a>由++(自增操作符)引发的思考</h1><p>最近发现了太多需要记忆的东西，深感自己失去了思考能力，昨夜在聊天发送<code>微博辣鸡++++++++++</code>后，突发奇想，在控制台里敲下以下代码：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> a = <span class="number">1</span>;</span><br><span class="line">a++++;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p><code>Uncaught SyntaxError: Unexpected token &#39;++&#39;</code></p>
+</blockquote>
+<p>看起来编译器并没有理解我的意图，那么再规范化一下：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> a = <span class="number">1</span>;</span><br><span class="line">(a++)++;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p><code>Uncaught SyntaxError: Invalid left-hand side expression in postfix operation</code></p>
+</blockquote>
+<p>什么鬼？我们不妨自行用通俗的语言解释一下这个错误，<code>(a++)</code>，在自增前返回 a 的值，也就是 1，然后再对 1 做自增，然后报错。</p>
+<p>不妨来验证一下：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">1</span>++;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p><code>Uncaught SyntaxError: Invalid left-hand side expression in postfix operation</code></p>
+</blockquote>
+<p>一模一样的错误，但是，这句话究竟在讲什么？</p>
+<h2 id="postfix-操作符"><a href="#postfix-操作符" class="headerlink" title="postfix++操作符"></a>postfix++操作符</h2><p>对于后置的自增操作符（前置、自减类似），mdn 有如下的解释<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Arithmetic_Operators" target="_blank" rel="noopener">[1]</a>：</p>
+<blockquote>
+<p>The increment operator increments (adds one to) its operand and returns a value.</p>
+<ul>
+<li>If used postfix, with operator after operand (for example, x++), then it increments and returns the value before incrementing.</li>
+</ul>
+</blockquote>
+<p>说明我们此操作符的理解大致正确，</p>
+<p>然后看语法，es6 标准中语法规定如下<a href="https://www.ecma-international.org/ecma-262/6.0/#sec-postfix-expressions" target="_blank" rel="noopener">[2]</a>：</p>
+<blockquote>
+<p>PostfixExpression[Yield] :</p>
+<ul>
+<li>LeftHandSideExpression[?Yield]</li>
+<li>LeftHandSideExpression[?Yield][no lineterminator here] ++</li>
+<li>LeftHandSideExpression[?Yield][no lineterminator here] –</li>
+</ul>
+</blockquote>
+<p>说明后置的自增表达式可以由<code>LeftHandSideExpression</code>和自增运算符组成。那么，什么是 LeftHandSideExpression？什么是表达式(Expression)？</p>
+<h2 id="表达式-Expression"><a href="#表达式-Expression" class="headerlink" title="表达式(Expression)"></a>表达式(Expression)</h2><blockquote>
+<p>An expression is any valid unit of code that resolves to a value.<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Expressions_and_Operators#Expressions" target="_blank" rel="noopener">[3 from mdn, Expressions]</a></p>
+</blockquote>
+<p>表达式是任何能被解析成值的代码单元。当然 mdn 也介绍了下表达式的分类等等，此处不加赘述。</p>
+<p>我们看个例子：<code>1 + 2</code>是不是表达式？是的。那么，</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> x = <span class="number">1</span>;</span><br><span class="line">x + <span class="number">2</span>;</span><br></pre></td></tr></table></figure>
+
+<p><code>x + 2</code>是不是个表达式？是的。再来，</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">delete</span> x;</span><br></pre></td></tr></table></figure>
+
+<p>是不是个表达式？是的。<code>delete</code>作用的对象是？<code>1</code>这个值？还是<code>x</code>？</p>
+<h3 id="引用？"><a href="#引用？" class="headerlink" title="引用？"></a>引用？</h3><p>尝试一下：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">delete</span> <span class="number">1</span>;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>true</p>
+</blockquote>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">delete</span> x;</span><br><span class="line">x;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>false<br>1</p>
+</blockquote>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> a = &#123; <span class="attr">x</span>: <span class="number">1</span> &#125;;</span><br><span class="line"><span class="keyword">delete</span> a.x;</span><br><span class="line">a.x;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>true<br>undefined</p>
+</blockquote>
+<p>很明显，我们并不是删除了<code>a.x</code>的值，我们只是删除了<code>a.x</code>的引用，当然，想了解更多为什么<code>delete 1</code>返回<code>true</code>可以看下<a href="https://www.ecma-international.org/ecma-262/6.0/#sec-delete-operator" target="_blank" rel="noopener">官方文档</a> or <a href="https://time.geekbang.org/column/intro/252" target="_blank" rel="noopener">周爱民老师的极客时间专栏</a>。</p>
+<p>对于一个“变量”而言，我们可以使用它的值，也可以使用它的引用，比如：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">x = x;</span><br></pre></td></tr></table></figure>
+
+<p>对这个表达式的理解，涉及两个概念，LHS 和 RHS，RHS 查询与简单地查找某个变量的值别无二致，而 LHS 查询则是试图 找到变量的容器本身，从而可以对其赋值。[from 你不知道的 JavaScript 上卷]</p>
+<p>我们对<code>=</code>后面的<code>x</code>做 RHS，对<code>=</code>前面的<code>x</code>做 LHS，把 RHS 的结果赋给 LHS 的结果，也就是“把<code>x</code>的值赋给<code>x</code>”。</p>
+<p>那么，这里的“变量”指的是什么？“赋值”表达式又有何特殊之处呢？</p>
+<h3 id="LeftHandSideExpression"><a href="#LeftHandSideExpression" class="headerlink" title="LeftHandSideExpression"></a>LeftHandSideExpression</h3><p>我们不妨再测试一下：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">1</span> = <span class="number">2</span>;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>Uncaught SyntaxError: Invalid left-hand side in assignment</p>
+</blockquote>
+<p>很明显报错了，我们不可能给 1 赋值。而且这里的错误不同于我们给一个常量赋值：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> y = <span class="number">1</span>;</span><br><span class="line">y = <span class="number">2</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">fn</span>(<span class="params"></span>) </span>&#123;&#125;</span><br><span class="line">fn() = <span class="number">1</span>;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>Uncaught TypeError: Assignment to constant variable.</p>
+</blockquote>
+<p>在语法层面上即可以看出，左侧的<code>1</code>是不能赋值的，我们也再次看到了<code>Invalid left-hand side</code>，与<code>++</code>导致的如出一辙。</p>
+<p>我们先看看规范对于<code>Left-Hand-Side Expressions</code>的<a href="https://www.ecma-international.org/ecma-262/6.0/#sec-left-hand-side-expressions" target="_blank" rel="noopener">语法描述</a>：<br>此处不再细究，只需要知道包含了各种表达式(有志之士可以研究下)，其中包括<code>1, x</code>等等等等。那问题出在哪呢？</p>
+<p>在<a href="https://www.ecma-international.org/ecma-262/6.0/#sec-assignment-operators-static-semantics-early-errors" target="_blank" rel="noopener">赋值表达式的 Early Errors</a>和<a href="https://www.ecma-international.org/ecma-262/6.0/#sec-postfix-expressions-static-semantics-early-errors" target="_blank" rel="noopener">postfix 表达式的 Early Errors</a>里可以找到一条</p>
+<blockquote>
+<p>It is an early Reference Error if IsValidSimpleAssignmentTarget of LeftHandSideExpression is false.</p>
+</blockquote>
+<p>那这个<code>IsValidSimpleAssignmentTarget</code>又在检查什么呢？</p>
+<p>字面上看，在检查是否是可以被赋值的对象，在标准中，有以下规则：</p>
+<p>对于一个标识符(Identifier)，除了</p>
+<blockquote>
+<p>If this IdentifierReference is contained in strict mode code and StringValue of Identifier is “eval” or “arguments”, return false.</p>
+</blockquote>
+<p>都是返回 true。<a href="https://www.ecma-international.org/ecma-262/6.0/#sec-identifiers-static-semantics-isvalidsimpleassignmenttarget" target="_blank" rel="noopener">[ref]</a></p>
+<p>对于<code>Left-Hand-Side Expressions</code>，应用以下规则<a href="https://www.ecma-international.org/ecma-262/6.0/#sec-static-semantics-static-semantics-isvalidsimpleassignmenttarget" target="_blank" rel="noopener">[ref]</a></p>
+<p><img src="/images/IsValidSimpleAssignmentTarget.png" alt="Left-Hand-Side Expressions IsValidSimpleAssignmentTarget"></p>
+<p>这便是报语法错误的原因了。</p>
+<p>至于<code>IsValidSimpleAssignmentTarget</code>对二者判断条件的差别与联系，是否能说明，对于标识符(Identifier)，也就是俗称的变量名、常量名等，满足其条件，就可以满足<code>Left-Hand-Side Expressions</code>的条件。我想是正确的，但是未能验证。望补充。</p>
+<h2 id="postfix-prefix-操作符是糟粕？"><a href="#postfix-prefix-操作符是糟粕？" class="headerlink" title="postfix/prefix 操作符是糟粕？"></a>postfix/prefix 操作符是糟粕？</h2><p>写了这么多，其实是为了解决自增操作符的问题，在其它语言测试的时候，发觉有些语言是没有自增操作符的。如 rust，swift。引用<a href="https://doc.rust-lang.org/1.2.0/complement-design-faq.html#why-no---x-or-x++?" target="_blank" rel="noopener">rust FAQ</a>的解释：<br>虽然这些操作符很方面，但是语义不明确容易造成错误，直接使用<code>x = x + 1</code>会更明确。</p>
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">首页</a></li>
+         
+          <li><a href="/about/">关于</a></li>
+         
+          <li><a href="/archives/">归档</a></li>
+         
+          <li><a href="/projects_url">项目</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#由-自增操作符-引发的思考"><span class="toc-number">1.</span> <span class="toc-text">由++(自增操作符)引发的思考</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#postfix-操作符"><span class="toc-number">1.1.</span> <span class="toc-text">postfix++操作符</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#表达式-Expression"><span class="toc-number">1.2.</span> <span class="toc-text">表达式(Expression)</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#引用？"><span class="toc-number">1.2.1.</span> <span class="toc-text">引用？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#LeftHandSideExpression"><span class="toc-number">1.2.2.</span> <span class="toc-text">LeftHandSideExpression</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#postfix-prefix-操作符是糟粕？"><span class="toc-number">1.3.</span> <span class="toc-text">postfix&#x2F;prefix 操作符是糟粕？</span></a></li></ol></li></ol>
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=https://amoonkin.github.io/%E5%B0%8F%E6%8E%A2js%E4%B8%AD%E8%A1%A8%E8%BE%BE%E5%BC%8F/" target="_blank" rel="noopener"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=https://amoonkin.github.io/%E5%B0%8F%E6%8E%A2js%E4%B8%AD%E8%A1%A8%E8%BE%BE%E5%BC%8F/&text=小探js中表达式" target="_blank" rel="noopener"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=https://amoonkin.github.io/%E5%B0%8F%E6%8E%A2js%E4%B8%AD%E8%A1%A8%E8%BE%BE%E5%BC%8F/&title=小探js中表达式" target="_blank" rel="noopener"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=https://amoonkin.github.io/%E5%B0%8F%E6%8E%A2js%E4%B8%AD%E8%A1%A8%E8%BE%BE%E5%BC%8F/&is_video=false&description=小探js中表达式" target="_blank" rel="noopener"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=小探js中表达式&body=Check out this article: https://amoonkin.github.io/%E5%B0%8F%E6%8E%A2js%E4%B8%AD%E8%A1%A8%E8%BE%BE%E5%BC%8F/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=https://amoonkin.github.io/%E5%B0%8F%E6%8E%A2js%E4%B8%AD%E8%A1%A8%E8%BE%BE%E5%BC%8F/&title=小探js中表达式" target="_blank" rel="noopener"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=https://amoonkin.github.io/%E5%B0%8F%E6%8E%A2js%E4%B8%AD%E8%A1%A8%E8%BE%BE%E5%BC%8F/&title=小探js中表达式" target="_blank" rel="noopener"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=https://amoonkin.github.io/%E5%B0%8F%E6%8E%A2js%E4%B8%AD%E8%A1%A8%E8%BE%BE%E5%BC%8F/&title=小探js中表达式" target="_blank" rel="noopener"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=https://amoonkin.github.io/%E5%B0%8F%E6%8E%A2js%E4%B8%AD%E8%A1%A8%E8%BE%BE%E5%BC%8F/&title=小探js中表达式" target="_blank" rel="noopener"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=https://amoonkin.github.io/%E5%B0%8F%E6%8E%A2js%E4%B8%AD%E8%A1%A8%E8%BE%BE%E5%BC%8F/&name=小探js中表达式&description=" target="_blank" rel="noopener"><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://news.ycombinator.com/submitlink?u=https://amoonkin.github.io/%E5%B0%8F%E6%8E%A2js%E4%B8%AD%E8%A1%A8%E8%BE%BE%E5%BC%8F/&t=小探js中表达式" target="_blank" rel="noopener"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> 菜单</a>
+        <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> 目录</a>
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> 分享</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> 返回顶部</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2016-2021
+    aMoonkin
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+         
+          <li><a href="/">首页</a></li>
+         
+          <li><a href="/about/">关于</a></li>
+         
+          <li><a href="/archives/">归档</a></li>
+         
+          <li><a href="/projects_url">项目</a></li>
+        
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+ 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script> 
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script> 
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"复制到粘贴板!\">";
+    btn += '<i class="far fa-clone"></i>';
+    btn += '</span>'; 
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "复制成功!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Google Analytics -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Umami Analytics -->
+
+<!-- Disqus Comments -->
+
+
+</body>
+</html>
